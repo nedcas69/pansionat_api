@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Form</title>
+</head>
+<body>
+    <form id="dateForm">
+        <label for="date_start">Выберите период начало:</label>
+        <input type="date" id="date_start" name="date_start" required>
+
+        <label for="date_end">конец:</label>
+        <input type="date" id="date_end" name="date_end" required>
+
+        <button type="button" onclick="getAvailableRooms()">Get Available Rooms</button>
+    </form>
+
+    <form id="orderForm" style="display: none;">
+        <label for="guest_type">Выберите кому:</label>
+        <select id="guest_type" name="guest_type">
+            <option value="sebe">Себе</option>
+            <option value="family">Членам семьи</option>
+            <option value="friend">Другу</option>
+        </select><br />
+        <label for="fio">Введите ФИО:</label>
+        <input type="text" id="fio" name="fio" ><br />
+        <label for="tel">Введите Tel:</label>
+        <input type="text" id="tel" name="tel" ><br />
+        <label for="tabel">Введите Таб №:</label>
+        <input type="text" id="tabel" name="tabel" ><br />
+        <label for="room_number">Выберите комнату:</label>
+        <select id="room_number" name="room_number">
+            <!-- Options will be added dynamically after getting available rooms -->
+        </select><br />
+
+        <button type="button" onclick="submitOrder()">Submit Order</button>
+    </form>
+
+
+    <script>
+        async function getAvailableRooms() {
+            const date_start = document.getElementById('date_start').value;
+            const date_end = document.getElementById('date_end').value;
+
+            const response = await fetch('http://127.0.0.1:8000/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ date_start, date_end }),
+            });
+
+            const data = await response.json();
+            console.log(data);
+            const roomNumberSelect = document.getElementById('room_number');
+            roomNumberSelect.innerHTML = '';
+
+            data.forEach(room => {
+                const option = document.createElement('option');
+                option.value = room.room_id;
+                option.text = `Room ${room.room_number}, Seats: ${room.number_of_seats}, Class: ${room.room_class}`;
+                roomNumberSelect.appendChild(option);
+            });
+
+            document.getElementById('orderForm').style.display = 'block';
+        }
+
+        function submitOrder() {
+            const date_start = document.getElementById('date_start').value;
+            const date_end = document.getElementById('date_end').value;
+            const guest_type = document.getElementById('guest_type').value;
+            const room_id = parseInt(document.getElementById('room_number').value);
+            const fio = document.getElementById('fio').value;
+            const tel = document.getElementById('tel').value;
+            const tabel = document.getElementById('tabel').value;
+            const user_id = 0;
+            const room_number = 0;
+            const room_class = "string";
+            const work = true;
+            const paytype = "string";
+            const pay_status = true;
+            const sebe_35 = 0;
+            const pension_30 = 0;
+            const semye_70 = 0;
+            const commerc_100 = 0;
+            const summa = 0;
+
+            // Perform a POST request to the /orders/ endpoint with the selected data
+            fetch('http://127.0.0.1:8000/orders', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({user_id, sebe_35, pension_30, summa, commerc_100, semye_70, pay_status, work, paytype, room_number, room_class, date_start, date_end, room_id, guest_type, fio, tel, tabel }),
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

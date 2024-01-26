@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Все заказы на пансионате "Металлург"{% endblock %}
+
+{% block content %}
+            <h2>hello {{username}}!</h2>
+        <h2>Все заказы на пансионате "Металлург" </h2>
+
+        <form method="get" action="/admin/orders/{{current_page}}">
+            <div class="mb-3">
+                <input type="text" class="form-control" id="fio_order" name="fio_order" value="{{ fio_order }}">
+            </div>
+            <button type="submit" class="btn btn-primary">Поиск</button>
+        </form>
+        <form method="get">
+            <div class="mb-3">
+                <input type="date" class="form" id="date_start" name="date_start" value="{{ date_start }}">
+                <input type="date" class="form" id="date_end" name="date_end" value="{{ date_end }}">
+            </div>
+            <button type="submit" onclick="getDate()" class="btn btn-primary">Поиск</button>
+        </form>
+        <a href="/admin/rooms/">Свободные комнаты</a>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th class="table-dark">№   </th>
+                <th class="table-dark">Қабул</th>
+                <th class="table-dark">ФИО</th>
+                <th class="table-dark">Телефон рақам</th>
+                <th class="table-dark">Хона рақами</th>
+                <th class="table-dark">Табел рақам</th>
+                <th class="table-dark">Нархи</th>
+                <th class="table-dark">Келиш</th>
+                <th class="table-dark">Кетиш</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for order in orders %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    <form method="post" action="/admin/order/">
+                        <input type="hidden" name="ids" value="{{order.order_id}}"/>
+                        <input type="hidden" name="page" value="{{current_page}}"/>
+                        <input type="hidden" name="fio_order" value="{{fio_order}}"/>
+                        <button type="submit" class="btn btn-primary">
+                            {% if order.work %} Kelmadi {% else %} Keldi {% endif %}
+                        </button>
+                    </form>
+                </td>
+                <td>{{ order.fio }}</td>
+                <td>{{ order.tel }}</td>
+                <td>{{ order.room_number }}</td>
+                <td>{{ order.tabel }}</td>
+                <td>{{ order.summa }}</td>
+                <td>{{ order.date_start }}</td>
+                <td>{{ order.date_end }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <table class="table table-striped">
+            <tbody>
+            <tr>
+                <td colspan="5"></td>
+                <td><strong>{{ total_sum }}</strong></td>
+                <td colspan="2">ИТОГО</td>
+            </tr>
+            </tbody>
+        </table>
+        {% if pagination %}
+        <!-- Пагинация -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                {% for page in range(1, total_pages + 1) %}
+                {% if page == 1 and page != current_page%}
+                <li class="page-item">
+                    <a class="page-link" href="{{ current_page_minus }}">Предыдущая</a>
+                </li>
+                {% endif %}
+                <li class="page-item {% if page == current_page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('show_admin_page', page=page) }}">{{ page }}</a>
+                </li>
+                {% if page == total_pages and current_page != total_pages %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ current_page_plus }}">Следующая</a>
+                </li>
+                {% endif %}
+
+                {% endfor %}
+            </ul>
+        </nav>
+        {% endif %}
+
+//<!-- <script src="{{ url_for('static', path='order.js') }}"></script>-->
+{% endblock %}
