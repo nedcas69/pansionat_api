@@ -17,21 +17,6 @@ order_router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-# @order_router.get("/admin/orders/", response_class=HTMLResponse, name="admin_page")
-# async def admin_page(request: Request,
-#                      current_user: dict = Depends(get_current_user_from_cookie),
-#                      db: async_session = Depends(get_db)
-#                      ):
-#     current_user = current_user.get("username")
-#     user = get_user(current_user, db)
-#     if not user:
-#         redirect_url = '/login'
-#         return RedirectResponse(url=redirect_url)
-#
-#     redirect_url = f"/admin/orders/1"  # Замените на ваш URL
-#     raise HTTPException(status_code=303, detail="See Other", headers={"Location": redirect_url})
-
-
 @order_router.post("/admin/orders/", name="_admin_page", response_model=dict)
 async def admin_page1(request: Request,
                       current_user: dict = Depends(get_current_user_from_cookie),

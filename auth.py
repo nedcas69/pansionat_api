@@ -88,7 +88,7 @@ async def verify_password(password, hash_password):
 
 async def authenticate_user(username: str, password: str, db: async_session = Depends(get_db)):
     # user = await db.execute(select(User).where(User.fio == username))
-    # try:
+    try:
         user = await get_user(username, db)
         verify = await verify_password(password, user.hashed_password)
         if user is None:
@@ -97,9 +97,10 @@ async def authenticate_user(username: str, password: str, db: async_session = De
             raise HTTPException(status_code=404, detail="User not found")
         if user and verify:
             return user
-        return False
-    # except:
-    #     return False
+        else:
+            return "user"
+    except:
+        return "user"
 
 
 async def get_current_user_from_cookie(Authorization: str | None = Cookie()):
@@ -147,38 +148,13 @@ async def register_user(username: str, password: str,
 # Роут для отображения формы входа
 @auth_router.get("/login", response_class=HTMLResponse, name="show_login_form")
 async def show_login_form(request: Request, msg: str = None):
-    return templates.TemplateResponse("login.html", {"request": request, "msg": msg})
+    return templates.TemplateResponse("login.html", {"request": request, "msg": "login"})
 
 @auth_router.post("/login")
 async def login(request: Request, form_data:
 OAuth2PasswordRequestForm = Depends(),
                 db: async_session = Depends(get_db)):
-    username = form_data.username
-    password = str(form_data.password)
-    try:
-        user = await get_user(username, db)
-        s = await verify_user(username, password, db)
-        if s:
-            access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-            access_token = create_access_token(data={"sub": user.fio}, expires_delta=access_token_expires)
-            redirect_url = "/admin/orders/"
-            # redirect_url = request.url_for("show_admin_page")
-            return RedirectResponse(url=redirect_url,
-                                    headers={"access_token": access_token, "token_type": "bearer",
-                                             'user_id': str(user.id),
-                                             'username': user.fio})
-        else:
-            # redirect_url = "/login"
-            redirect_url = request.url_for("show_login_form")
-            return RedirectResponse(url=redirect_url)
-            # return RedirectResponse(url="/login?msg=Invalid%20credentials")
-
-
-    except Exception as e:
-        # logger.error(f"Error: {e}")
-        # redirect_url = "/login"
-        redirect_url = request.url_for("show_login_form")
-        return RedirectResponse(url=redirect_url)
+    return templates.TemplateResponse("login.html", {"request": request, "msg": "Неправильное имя или пароль"})
 
 
 # Роут для генерации токена аутентификации
@@ -192,12 +168,13 @@ async def login_for_access_token(response: Response,
     username = form_data.username
     password = form_data.password
     user = await authenticate_user(username, password, db)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    if user == 'user':
+        redirect_url = "/login"
+        # redirect_url = request.url_for("show_login_form")
+        headers = {
+            "Set-Cookie": f"Authorization=a; Path=/; Max-Age=1",
+        }
+        return RedirectResponse(url=redirect_url, headers=headers)
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(data={"sub": user.fio}, expires_delta=access_token_expires)
     print(user.fio, access_token)

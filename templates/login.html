@@ -3,6 +3,9 @@
 {% block title %}Вход{% endblock %}
 
 {% block content %}
+{% if msg %}
+    <p style="color: red;">{{ msg }}</p>
+{% endif %}
 <body>
     <div class="container">
         <h2 class="mt-5">Вход</h2>
