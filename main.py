@@ -38,28 +38,28 @@ root_logger.setLevel(logging.DEBUG)
 
 
 # Обработчик для записи логов при возникновении ошибок
-def error_handler(request: Request, exc: Union[HTTPException, RequestValidationError, Exception]):
-    logger = logging.getLogger(__name__)
-    logger.exception("Error processing request")
-    return JSONResponse(content={"error": "Internal Server Error"}, status_code=500)
-
-
-# Добавляем обработчик ошибок к FastAPI
-app.add_exception_handler(HTTPException, error_handler)
-app.add_exception_handler(RequestValidationError, error_handler)
+# def error_handler(request: Request, exc: Union[HTTPException, RequestValidationError, Exception]):
+#     logger = logging.getLogger(__name__)
+#     logger.exception("Error processing request")
+#     return JSONResponse(content={"error": "Internal Server Error"}, status_code=500)
+#
+#
+# # Добавляем обработчик ошибок к FastAPI
+# app.add_exception_handler(HTTPException, error_handler)
+# app.add_exception_handler(RequestValidationError, error_handler)
 
 
 @app.get('/')
 async def main():
     return RedirectResponse(url="/admin/orders/1")
 
-try:
+# try:
     # Включаем роутеры в блоке try
-    app.include_router(orderApi_router)
-    app.include_router(auth_router)
-    app.include_router(order_router)
-except Exception as e:
-    # Обрабатываем и логируем исключение, если оно произошло при включении роутеров
-    logger = logging.getLogger(__name__)
-    logger.exception(f"Произошла ошибка при включении маршрутизаторов: {e}")
+app.include_router(orderApi_router)
+app.include_router(auth_router)
+app.include_router(order_router)
+# except Exception as e:
+#     # Обрабатываем и логируем исключение, если оно произошло при включении роутеров
+#     logger = logging.getLogger(__name__)
+#     logger.exception(f"Произошла ошибка при включении маршрутизаторов: {e}")
 

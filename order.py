@@ -17,18 +17,19 @@ order_router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-@order_router.get("/admin/orders/", response_class=HTMLResponse, name="admin_page")
-async def admin_page(request: Request,
-                     current_user: dict = Depends(get_current_user_from_cookie),
-                     db: async_session = Depends(get_db)
-                     ):
-    user = get_user(current_user.get("username"), db)
-    if not user:
-        redirect_url = request.url_for("show_login_form")
-        return RedirectResponse(url=redirect_url)
-
-    redirect_url = f"/admin/orders/1"  # Замените на ваш URL
-    raise HTTPException(status_code=303, detail="See Other", headers={"Location": redirect_url})
+# @order_router.get("/admin/orders/", response_class=HTMLResponse, name="admin_page")
+# async def admin_page(request: Request,
+#                      current_user: dict = Depends(get_current_user_from_cookie),
+#                      db: async_session = Depends(get_db)
+#                      ):
+#     current_user = current_user.get("username")
+#     user = get_user(current_user, db)
+#     if not user:
+#         redirect_url = '/login'
+#         return RedirectResponse(url=redirect_url)
+#
+#     redirect_url = f"/admin/orders/1"  # Замените на ваш URL
+#     raise HTTPException(status_code=303, detail="See Other", headers={"Location": redirect_url})
 
 
 @order_router.post("/admin/orders/", name="_admin_page", response_model=dict)
@@ -36,13 +37,17 @@ async def admin_page1(request: Request,
                       current_user: dict = Depends(get_current_user_from_cookie),
                       db: async_session = Depends(get_db)
                       ):
-    user = get_user(current_user.get("username"), db)
-    if not user:
-        redirect_url = request.url_for("show_login_form")
-        return RedirectResponse(url=redirect_url)
+    try:
+        user = get_user(current_user.get("username"), db)
+        if not user:
+            redirect_url = '/login'
+            return RedirectResponse(url=redirect_url)
 
-    redirect_url = f"/admin/orders/1"  # Замените на ваш URL
-    raise HTTPException(status_code=303, detail="See Other", headers={"Location": redirect_url})
+        redirect_url = f"/admin/orders/1"  # Замените на ваш URL
+        raise HTTPException(status_code=303, detail="See Other", headers={"Location": redirect_url})
+    except:
+        redirect_url = '/login'
+        return RedirectResponse(url=redirect_url)
 
 
 @order_router.post("/admin/order/", name="_admin_page", response_model=dict)
@@ -58,9 +63,13 @@ async def admin_page1(request: Request,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    user = get_user(current_user.get("username"), db)
-    if not user:
-        redirect_url = request.url_for("show_login_form")
+    try:
+        user = get_user(current_user.get("username"), db)
+        if not user:
+            redirect_url = '/login'
+            return RedirectResponse(url=redirect_url)
+    except:
+        redirect_url = '/login'
         return RedirectResponse(url=redirect_url)
     id = ids
     querys = select(Order)
@@ -79,7 +88,7 @@ async def admin_page1(request: Request,
 
     except Exception as e:
         # Обработка ошибок, например, вывод в лог
-        print({"error": str(e)})
+        print({"err": str(e)})
     fio = fio_order
     redirect_url = f"/admin/orders/{page}?fio_order={fio}"  # Замените на ваш URL
     raise HTTPException(status_code=303, detail="See Other", headers={"Location": redirect_url})
@@ -96,8 +105,8 @@ async def show_admin_room(request: Request,
     user = current_user.get("username")
     current_user = get_user(user, db)
     if not current_user:
-        # redirect_url = "/login"
-        redirect_url = request.url_for("show_login_form")
+        redirect_url = "/login"
+        # redirect_url = request.url_for("show_login_form")
         return RedirectResponse(url=redirect_url)
 
 
@@ -112,9 +121,9 @@ async def show_admin_page(request: Request, page: int, fio_order: Optional[str] 
                           ):
     user = current_user.get("username")
     current_user = get_user(user, db)
-    if not current_user:
-        # redirect_url = "/login"
-        redirect_url = request.url_for("show_login_form")
+    if current_user == '0':
+        redirect_url = "/login"
+        # redirect_url = request.url_for("show_login_form")
         return RedirectResponse(url=redirect_url)
 
 

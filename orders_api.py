@@ -21,6 +21,8 @@ async def create_order(order: OrderCreated, db: async_session = Depends(get_db))
         order.pension_30 = 0
         order.semye_70 = 0
         order.commerc_100 = 0
+        if guest_type == 'pen':
+            order.pension_30 = 30
         if guest_type == 'sebe':
             order.sebe_35 = 35
         if guest_type == 'family':

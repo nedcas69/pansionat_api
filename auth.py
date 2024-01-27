@@ -1,7 +1,6 @@
 import math
 import random
 
-
 from fastapi import status, APIRouter, Depends, Form, HTTPException, Cookie, Response
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt
@@ -61,7 +60,6 @@ async def get_user(username: str, db: async_session = Depends(get_db)):
     return user.scalar()
 
 
-
 # Функция для получения пользователя из базы данных
 async def get_user_id(id: int, db: async_session = Depends(get_db)):
     user = await db.execute(select(User).filter(User.id == id))
@@ -101,21 +99,29 @@ async def authenticate_user(username: str, password: str, db: async_session = De
     return False
 
 
-async def get_current_user_from_cookie(token: str = Cookie(...)):
-    # try:
-        # Расшифровать токен и выполнить необходимые проверки
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            redirect_url = '/login'
-            return RedirectResponse(url=redirect_url)
-        print(token, username)
-        # Вернуть информацию о пользователе, если все в порядке
-        return {"username": username}
+async def get_current_user_from_cookie(Authorization: str | None = Cookie()):
+    try:
+        if Authorization != None:
+            # Просто выведите токен для отладки
+            print("Received token:", Authorization)
+            # Расшифровать токен и выполнить необходимые проверки
+            payload = jwt.decode(Authorization, SECRET_KEY, algorithms=[ALGORITHM])
+            username: str = payload.get("sub")
+            if username is None:
+                redirect_url = '/login'
+                return RedirectResponse(url=redirect_url)
+            print(Authorization, '\n', username)
+            # Вернуть информацию о пользователе, если все в порядке
+            return {"username": username}
+        else:
+            return {"username": 0}
 
-    # except Exception as e:
-    #     # redirect_url = "/login"
-    #     pass
+    except Exception as e:
+        # redirect_url = "/login"
+        # return RedirectResponse(url=redirect_url)
+        print(str(e))
+        return {"username": 0}
+#     pass
 
 
 # Роут для регистрации пользователя
@@ -142,99 +148,107 @@ async def show_login_form(request: Request, msg: str = None):
 
 
 # Роут для выполнения аутентификации
-@auth_router.post("/login")
-async def login(request: Request, form_data:
-                OAuth2PasswordRequestForm = Depends(),
-                db: async_session = Depends(get_db)):
-    username = form_data.username
-    password = str(form_data.password)
-    try:
-        user = await get_user(username, db)
-        s = await verify_user(username, password, db)
-        if s:
-            access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-            access_token = create_access_token(data={"sub": user.fio}, expires_delta=access_token_expires)
-            redirect_url = "/admin/orders/"
-            # redirect_url = request.url_for("show_admin_page")
-            return RedirectResponse(url=redirect_url,
-                                    headers={"access_token": access_token, "token_type": "bearer",
-                                             'user_id': str(user.id),
-                                             'username': user.fio})
-        else:
-            # redirect_url = "/login"
-            redirect_url = request.url_for("show_login_form")
-            return RedirectResponse(url=redirect_url)
-            # return RedirectResponse(url="/login?msg=Invalid%20credentials")
-
-
-    except Exception as e:
-        # logger.error(f"Error: {e}")
-        # redirect_url = "/login"
-        redirect_url = request.url_for("show_login_form")
-        return RedirectResponse(url=redirect_url)
+# @auth_router.post("/login")
+# async def login(request: Request, form_data:
+# OAuth2PasswordRequestForm = Depends(),
+#                 db: async_session = Depends(get_db)):
+#     username = form_data.username
+#     password = str(form_data.password)
+#     try:
+#         user = await get_user(username, db)
+#         s = await verify_user(username, password, db)
+#         if s:
+#             access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+#             access_token = create_access_token(data={"sub": user.fio}, expires_delta=access_token_expires)
+#             redirect_url = "/admin/orders/"
+#             # redirect_url = request.url_for("show_admin_page")
+#             return RedirectResponse(url=redirect_url,
+#                                     headers={"access_token": access_token, "token_type": "bearer",
+#                                              'user_id': str(user.id),
+#                                              'username': user.fio})
+#         else:
+#             # redirect_url = "/login"
+#             redirect_url = request.url_for("show_login_form")
+#             return RedirectResponse(url=redirect_url)
+#             # return RedirectResponse(url="/login?msg=Invalid%20credentials")
+#
+#
+#     except Exception as e:
+#         # logger.error(f"Error: {e}")
+#         # redirect_url = "/login"
+#         redirect_url = request.url_for("show_login_form")
+#         return RedirectResponse(url=redirect_url)
 
 
 # Роут для генерации токена аутентификации
 @auth_router.post("/token")
-async def login_for_access_token(# form_data: dict,
-                                 form_data:OAuth2PasswordRequestForm = Depends(),
+async def login_for_access_token(response: Response,
+                                 form_data: OAuth2PasswordRequestForm = Depends(),
                                  db: async_session = Depends(get_db)):
     # try:
     #     username = form_data.get("username")
     #     password = form_data.get("password")
-        username = form_data.username
-        password = form_data.password
-        user = await authenticate_user(username, password, db)
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect username or password",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = create_access_token(
-            data={"sub": user.fio}, expires_delta=access_token_expires
+    username = form_data.username
+    password = form_data.password
+    user = await authenticate_user(username, password, db)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
         )
-        response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
-        response.set_cookie("Authorization", f"Bearer {access_token}", httponly=True, path="/")
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(data={"sub": user.fio}, expires_delta=access_token_expires)
+    print(user.fio, access_token)
+
+    # response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
+    # response = {"access_token": access_token}
+    # response.set_cookie("Authorization", f"Bearer {access_token}", httponly=True, path="/")
+
+    expires = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    # Преобразуйте в UTC и форматируйте как строку
+    expires_utc = expires.replace(tzinfo=timezone.utc)
+    expires_str = expires_utc.strftime("%a, %d %b %Y %H:%M:%S GMT")
+
+    # Вычисляем дату и время истечения срока действия токена
+    # expiration_time = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    # Устанавливаем куку в HTTP-ответе
+    response.set_cookie(
+        key="Authorization",
+        value=f"{access_token}",
+        expires=expires_str,
+        path="/",
+        # secure=False,  # Установите в True, если ваш сайт работает по HTTPS
+        # httponly=True,  # Установите в True, чтобы кука была доступна только через HTTP
+    )
+    print(response)
+    # return response
+    redirect_url = "/admin/orders/"
+    # Добавление куки в хедеры
+    headers = {
+        "Set-Cookie": f"Authorization={access_token}; Path=/; Max-Age=3600",
+    }
+    return RedirectResponse(url=redirect_url, headers=headers)
 
 
-        expires = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-
-        # Преобразуйте в UTC и форматируйте как строку
-        expires_utc = expires.replace(tzinfo=timezone.utc)
-        expires_str = expires_utc.strftime("%a, %d %b %Y %H:%M:%S GMT")
-
-        # Вычисляем дату и время истечения срока действия токена
-        # expiration_time = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-
-        # Устанавливаем куку в HTTP-ответе
-        response.set_cookie(
-            key="token",
-            value=access_token,
-            expires=expires_str,
-            path="/",
-            secure=False,  # Установите в True, если ваш сайт работает по HTTPS
-            httponly=False,  # Установите в True, чтобы кука была доступна только через HTTP
-        )
-
-        # return response
-        redirect_url = "/admin/orders/"
-        return RedirectResponse(url=redirect_url)
-    # except Exception as e:
-    #     print(str(e))
+# except Exception as e:
+#     print(str(e))
 
 
 # Этот эндпоинт будет использоваться для выхода из системы (логаута)
 @auth_router.get("/logout")
 def logout(response: Response, request: Request):
-    response.delete_cookie("token", path="/")
-    redirect_url = "/admin/orders/1"
+    response.delete_cookie("Authorization", path="/")
+    redirect_url = "/login"
     # redirect_url = request.url_for("show_login_form")
-    return RedirectResponse(url=redirect_url)
+    headers = {
+        "Set-Cookie": f"Authorization=a; Path=/; Max-Age=1",
+    }
+    return RedirectResponse(url=redirect_url, headers=headers)
 
 
 @auth_router.get("/status", response_model=dict)
-async def status(current_user: dict = Depends(get_current_user_from_cookie),):
+async def status(current_user: dict = Depends(get_current_user_from_cookie), ):
     return {"status": "OK", "user": current_user}
-
