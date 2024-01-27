@@ -56,7 +56,7 @@ async def get_user(username: str, db: async_session = Depends(get_db)):
     if user is None:
         # Обработка случая, когда пользователь не найден
         # Например, возбуждение исключения или возврат информации об отсутствии пользователя
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Пользователь не найден.")
     return user.scalar()
 
 
@@ -66,7 +66,7 @@ async def get_user_id(id: int, db: async_session = Depends(get_db)):
     if user is None:
         # Обработка случая, когда пользователь не найден
         # Например, возбуждение исключения или возврат информации об отсутствии пользователя
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Пользователь не найден.")
     return user.scalar()
 
 
@@ -76,7 +76,7 @@ async def verify_user(username: str, password: str, db: async_session = Depends(
     if user is None:
         # Обработка случая, когда пользователь не найден
         # Например, возбуждение исключения или возврат информации об отсутствии пользователя
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Пользователь не найден.")
     if user is not None and pwd_context.verify(password, user.hashed_password):
         return user
     return None
@@ -94,7 +94,7 @@ async def authenticate_user(username: str, password: str, db: async_session = De
         if user is None:
             # Обработка случая, когда пользователь не найден
             # Например, возбуждение исключения или возврат информации об отсутствии пользователя
-            raise HTTPException(status_code=404, detail="User not found")
+            raise HTTPException(status_code=404, detail="Пользователь не найден.")
         if user and verify:
             return user
         else:

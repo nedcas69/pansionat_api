@@ -1,5 +1,6 @@
 import math
-
+import datetime as dates
+from datetime import timedelta
 from fastapi import status, APIRouter, Depends, Form, HTTPException
 from sqlalchemy import func
 from starlette.requests import Request
@@ -79,20 +80,7 @@ async def admin_page1(request: Request,
     raise HTTPException(status_code=303, detail="See Other", headers={"Location": redirect_url})
 
 
-# Роут для отображения админки
-@order_router.get("/admin/rooms/", response_class=HTMLResponse, name="show_admin_room", response_model=dict)
-async def show_admin_room(request: Request,
-                          date_start: Optional[date] = None,
-                          date_end: Optional[date] = None,
-                          current_user: dict = Depends(get_current_user_from_cookie),
-                          db: async_session = Depends(get_db),
-                          ):
-    user = current_user.get("username")
-    current_user = get_user(user, db)
-    if not current_user:
-        redirect_url = "/login"
-        # redirect_url = request.url_for("show_login_form")
-        return RedirectResponse(url=redirect_url)
+#
 
 
 # Роут для отображения админки
@@ -113,8 +101,8 @@ async def show_admin_page(request: Request, page: int, fio_order: Optional[str] 
 
 
     try:
-        per_page = 20
-        pagination = True
+        per_page = 1000
+        pagination = False
         # Построение запроса для фильтрации
         query = select(Order)
 
@@ -142,12 +130,10 @@ async def show_admin_page(request: Request, page: int, fio_order: Optional[str] 
                 )
                 pagination = False
         except:
-            if date_end == None and date_start == None:
-                redirect_url = f'/admin/orders/{page}'
-                return RedirectResponse(url=redirect_url)
-
-        if pagination:
-            query = select(Order).limit(per_page).offset((page - 1) * per_page)
+            pass
+        start = dates.date.today()
+        end = start + timedelta(days=30)
+        query = select(Order).where((Order.date_start <= start) & (Order.date_end >= end))
         # Выполнение запроса
         orders = await db.execute(query)
         orders = orders.scalars().all()

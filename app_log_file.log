@@ -8226,3 +8226,296 @@ Traceback (most recent call last):
     self._write_fut = self._loop._proactor.send(self._sock, data)
 AttributeError: 'NoneType' object has no attribute 'send'
 2024-01-27 12:11:02,834 - ERROR - The garbage collector is trying to clean up non-checked-in connection <AdaptedConnection <asyncpg.connection.Connection object at 0x000002B1E251A200>>, which will be terminated.  Please ensure that SQLAlchemy pooled connections are returned to the pool explicitly, either by calling ``close()`` or by using appropriate context managers to manage their lifecycle.
+2024-01-27 12:11:08,462 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:08,462 - DEBUG - Calling on_field_name with data[0:8]
+2024-01-27 12:11:08,463 - DEBUG - Calling on_field_data with data[9:15]
+2024-01-27 12:11:08,463 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:08,463 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:08,463 - DEBUG - Calling on_field_name with data[16:24]
+2024-01-27 12:11:08,463 - DEBUG - Calling on_field_data with data[25:28]
+2024-01-27 12:11:08,463 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:08,463 - DEBUG - Calling on_end with no data
+2024-01-27 12:11:12,214 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:12,214 - DEBUG - Calling on_field_name with data[0:8]
+2024-01-27 12:11:12,214 - DEBUG - Calling on_field_data with data[9:14]
+2024-01-27 12:11:12,214 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:12,214 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:12,214 - DEBUG - Calling on_field_name with data[15:23]
+2024-01-27 12:11:12,214 - DEBUG - Calling on_field_data with data[24:27]
+2024-01-27 12:11:12,214 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:12,214 - DEBUG - Calling on_end with no data
+2024-01-27 12:11:12,296 - INFO - select pg_catalog.version()
+2024-01-27 12:11:12,296 - INFO - [raw sql] ()
+2024-01-27 12:11:12,296 - INFO - select current_schema()
+2024-01-27 12:11:12,296 - INFO - [raw sql] ()
+2024-01-27 12:11:12,296 - INFO - show standard_conforming_strings
+2024-01-27 12:11:12,296 - INFO - [raw sql] ()
+2024-01-27 12:11:12,296 - INFO - BEGIN (implicit)
+2024-01-27 12:11:12,312 - INFO - SELECT "user".id, "user".fio, "user".role, "user".hashed_password, "user".is_superuser, "user".is_verified, "user".created_at 
+FROM "user" 
+WHERE "user".fio = $1::VARCHAR
+2024-01-27 12:11:12,313 - INFO - [generated in 0.00115s] ('admin',)
+2024-01-27 12:11:12,315 - DEBUG - detected 'bcrypt' backend, version '4.1.2'
+2024-01-27 12:11:12,315 - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2024-01-27 12:11:12,769 - INFO - BEGIN (implicit)
+2024-01-27 12:11:12,769 - INFO - SELECT "order".order_id, "order".room_id, "order".user_id, "order".fio, "order".tel, "order".room_number, "order".room_class, "order".work, "order".date_start, "order".date_end, "order".tabel, "order".paytype, "order".pay_status, "order".sebe_35, "order".pension_30, "order".semye_70, "order".commerc_100, "order".summa, "order".created_at, "order".updated_at 
+FROM "order"
+2024-01-27 12:11:12,769 - INFO - [generated in 0.00035s] ()
+2024-01-27 12:11:12,785 - INFO - SELECT count("order".order_id) AS count_1 
+FROM "order"
+2024-01-27 12:11:12,785 - INFO - [generated in 0.00041s] ()
+2024-01-27 12:11:18,380 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:18,380 - DEBUG - Calling on_field_name with data[0:8]
+2024-01-27 12:11:18,380 - DEBUG - Calling on_field_data with data[9:15]
+2024-01-27 12:11:18,380 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:18,380 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:18,380 - DEBUG - Calling on_field_name with data[16:24]
+2024-01-27 12:11:18,380 - DEBUG - Calling on_field_data with data[25:28]
+2024-01-27 12:11:18,380 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:18,380 - DEBUG - Calling on_end with no data
+2024-01-27 12:11:18,446 - INFO - BEGIN (implicit)
+2024-01-27 12:11:18,446 - INFO - SELECT "user".id, "user".fio, "user".role, "user".hashed_password, "user".is_superuser, "user".is_verified, "user".created_at 
+FROM "user" 
+WHERE "user".fio = $1::VARCHAR
+2024-01-27 12:11:18,446 - INFO - [cached since 6.149s ago] ('admin1',)
+2024-01-27 12:11:18,467 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:18,467 - DEBUG - Calling on_field_name with data[0:8]
+2024-01-27 12:11:18,467 - DEBUG - Calling on_field_data with data[9:15]
+2024-01-27 12:11:18,467 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:18,467 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:18,467 - DEBUG - Calling on_field_name with data[16:24]
+2024-01-27 12:11:18,467 - DEBUG - Calling on_field_data with data[25:28]
+2024-01-27 12:11:18,467 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:18,467 - DEBUG - Calling on_end with no data
+2024-01-27 12:11:20,833 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:20,833 - DEBUG - Calling on_field_name with data[0:8]
+2024-01-27 12:11:20,833 - DEBUG - Calling on_field_data with data[9:15]
+2024-01-27 12:11:20,833 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:20,833 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:20,833 - DEBUG - Calling on_field_name with data[16:24]
+2024-01-27 12:11:20,833 - DEBUG - Calling on_field_data with data[25:28]
+2024-01-27 12:11:20,834 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:20,834 - DEBUG - Calling on_end with no data
+2024-01-27 12:11:20,896 - INFO - BEGIN (implicit)
+2024-01-27 12:11:20,896 - INFO - SELECT "user".id, "user".fio, "user".role, "user".hashed_password, "user".is_superuser, "user".is_verified, "user".created_at 
+FROM "user" 
+WHERE "user".fio = $1::VARCHAR
+2024-01-27 12:11:20,896 - INFO - [cached since 8.598s ago] ('admin1',)
+2024-01-27 12:11:20,916 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:20,916 - DEBUG - Calling on_field_name with data[0:8]
+2024-01-27 12:11:20,916 - DEBUG - Calling on_field_data with data[9:15]
+2024-01-27 12:11:20,916 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:20,916 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:20,916 - DEBUG - Calling on_field_name with data[16:24]
+2024-01-27 12:11:20,916 - DEBUG - Calling on_field_data with data[25:28]
+2024-01-27 12:11:20,916 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:20,916 - DEBUG - Calling on_end with no data
+2024-01-27 12:11:22,764 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:22,764 - DEBUG - Calling on_field_name with data[0:8]
+2024-01-27 12:11:22,764 - DEBUG - Calling on_field_data with data[9:14]
+2024-01-27 12:11:22,764 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:22,764 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:22,764 - DEBUG - Calling on_field_name with data[15:23]
+2024-01-27 12:11:22,764 - DEBUG - Calling on_field_data with data[24:28]
+2024-01-27 12:11:22,764 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:22,764 - DEBUG - Calling on_end with no data
+2024-01-27 12:11:22,989 - INFO - BEGIN (implicit)
+2024-01-27 12:11:22,989 - INFO - SELECT "user".id, "user".fio, "user".role, "user".hashed_password, "user".is_superuser, "user".is_verified, "user".created_at 
+FROM "user" 
+WHERE "user".fio = $1::VARCHAR
+2024-01-27 12:11:22,989 - INFO - [cached since 10.69s ago] ('admin',)
+2024-01-27 12:11:23,219 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:23,219 - DEBUG - Calling on_field_name with data[0:8]
+2024-01-27 12:11:23,219 - DEBUG - Calling on_field_data with data[9:14]
+2024-01-27 12:11:23,219 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:23,219 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:11:23,219 - DEBUG - Calling on_field_name with data[15:23]
+2024-01-27 12:11:23,219 - DEBUG - Calling on_field_data with data[24:28]
+2024-01-27 12:11:23,219 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:11:23,219 - DEBUG - Calling on_end with no data
+2024-01-27 12:18:13,296 - ERROR - Exception terminating connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000024986D2B2E0>>
+Traceback (most recent call last):
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\pool\base.py", line 377, in _close_connection
+    self._dialect.do_terminate(connection)
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 1104, in do_terminate
+    dbapi_connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 897, in terminate
+    self._connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1478, in terminate
+    self._abort()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1505, in _abort
+    self._protocol.abort()
+  File "asyncpg\protocol\protocol.pyx", line 606, in asyncpg.protocol.protocol.BaseProtocol.abort
+  File "asyncpg\protocol\coreproto.pyx", line 1125, in asyncpg.protocol.protocol.CoreProtocol._terminate
+  File "asyncpg\protocol\protocol.pyx", line 966, in asyncpg.protocol.protocol.BaseProtocol._write
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 365, in write
+    self._loop_writing(data=bytes(data))
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 401, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+AttributeError: 'NoneType' object has no attribute 'send'
+2024-01-27 12:18:13,311 - ERROR - The garbage collector is trying to clean up non-checked-in connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000024986D2B2E0>>, which will be terminated.  Please ensure that SQLAlchemy pooled connections are returned to the pool explicitly, either by calling ``close()`` or by using appropriate context managers to manage their lifecycle.
+2024-01-27 12:18:13,311 - ERROR - Exception terminating connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000024986D2B4C0>>
+Traceback (most recent call last):
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\pool\base.py", line 377, in _close_connection
+    self._dialect.do_terminate(connection)
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 1104, in do_terminate
+    dbapi_connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 897, in terminate
+    self._connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1478, in terminate
+    self._abort()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1505, in _abort
+    self._protocol.abort()
+  File "asyncpg\protocol\protocol.pyx", line 606, in asyncpg.protocol.protocol.BaseProtocol.abort
+  File "asyncpg\protocol\coreproto.pyx", line 1125, in asyncpg.protocol.protocol.CoreProtocol._terminate
+  File "asyncpg\protocol\protocol.pyx", line 966, in asyncpg.protocol.protocol.BaseProtocol._write
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 365, in write
+    self._loop_writing(data=bytes(data))
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 401, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+AttributeError: 'NoneType' object has no attribute 'send'
+2024-01-27 12:18:13,311 - ERROR - The garbage collector is trying to clean up non-checked-in connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000024986D2B4C0>>, which will be terminated.  Please ensure that SQLAlchemy pooled connections are returned to the pool explicitly, either by calling ``close()`` or by using appropriate context managers to manage their lifecycle.
+2024-01-27 12:18:13,311 - ERROR - Exception terminating connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000024986D2B6A0>>
+Traceback (most recent call last):
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\pool\base.py", line 377, in _close_connection
+    self._dialect.do_terminate(connection)
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 1104, in do_terminate
+    dbapi_connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 897, in terminate
+    self._connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1478, in terminate
+    self._abort()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1505, in _abort
+    self._protocol.abort()
+  File "asyncpg\protocol\protocol.pyx", line 606, in asyncpg.protocol.protocol.BaseProtocol.abort
+  File "asyncpg\protocol\coreproto.pyx", line 1125, in asyncpg.protocol.protocol.CoreProtocol._terminate
+  File "asyncpg\protocol\protocol.pyx", line 966, in asyncpg.protocol.protocol.BaseProtocol._write
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 365, in write
+    self._loop_writing(data=bytes(data))
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 401, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+AttributeError: 'NoneType' object has no attribute 'send'
+2024-01-27 12:18:13,311 - ERROR - The garbage collector is trying to clean up non-checked-in connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000024986D2B6A0>>, which will be terminated.  Please ensure that SQLAlchemy pooled connections are returned to the pool explicitly, either by calling ``close()`` or by using appropriate context managers to manage their lifecycle.
+2024-01-27 12:18:13,311 - ERROR - Exception terminating connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000024986D2A200>>
+Traceback (most recent call last):
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\pool\base.py", line 377, in _close_connection
+    self._dialect.do_terminate(connection)
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 1104, in do_terminate
+    dbapi_connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 897, in terminate
+    self._connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1478, in terminate
+    self._abort()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1505, in _abort
+    self._protocol.abort()
+  File "asyncpg\protocol\protocol.pyx", line 606, in asyncpg.protocol.protocol.BaseProtocol.abort
+  File "asyncpg\protocol\coreproto.pyx", line 1125, in asyncpg.protocol.protocol.CoreProtocol._terminate
+  File "asyncpg\protocol\protocol.pyx", line 966, in asyncpg.protocol.protocol.BaseProtocol._write
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 365, in write
+    self._loop_writing(data=bytes(data))
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 401, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+AttributeError: 'NoneType' object has no attribute 'send'
+2024-01-27 12:18:13,311 - ERROR - The garbage collector is trying to clean up non-checked-in connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000024986D2A200>>, which will be terminated.  Please ensure that SQLAlchemy pooled connections are returned to the pool explicitly, either by calling ``close()`` or by using appropriate context managers to manage their lifecycle.
+2024-01-27 12:18:13,311 - ERROR - Exception terminating connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000024986D2A2F0>>
+Traceback (most recent call last):
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\pool\base.py", line 377, in _close_connection
+    self._dialect.do_terminate(connection)
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 1104, in do_terminate
+    dbapi_connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 897, in terminate
+    self._connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1478, in terminate
+    self._abort()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1505, in _abort
+    self._protocol.abort()
+  File "asyncpg\protocol\protocol.pyx", line 606, in asyncpg.protocol.protocol.BaseProtocol.abort
+  File "asyncpg\protocol\coreproto.pyx", line 1125, in asyncpg.protocol.protocol.CoreProtocol._terminate
+  File "asyncpg\protocol\protocol.pyx", line 966, in asyncpg.protocol.protocol.BaseProtocol._write
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 365, in write
+    self._loop_writing(data=bytes(data))
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 401, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+AttributeError: 'NoneType' object has no attribute 'send'
+2024-01-27 12:18:13,311 - ERROR - The garbage collector is trying to clean up non-checked-in connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000024986D2A2F0>>, which will be terminated.  Please ensure that SQLAlchemy pooled connections are returned to the pool explicitly, either by calling ``close()`` or by using appropriate context managers to manage their lifecycle.
+2024-01-27 12:18:18,576 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:18:18,576 - DEBUG - Calling on_field_name with data[0:8]
+2024-01-27 12:18:18,576 - DEBUG - Calling on_field_data with data[9:14]
+2024-01-27 12:18:18,576 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:18:18,576 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:18:18,576 - DEBUG - Calling on_field_name with data[15:23]
+2024-01-27 12:18:18,576 - DEBUG - Calling on_field_data with data[24:28]
+2024-01-27 12:18:18,576 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:18:18,576 - DEBUG - Calling on_end with no data
+2024-01-27 12:18:20,765 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:18:20,765 - DEBUG - Calling on_field_name with data[0:8]
+2024-01-27 12:18:20,765 - DEBUG - Calling on_field_data with data[9:14]
+2024-01-27 12:18:20,765 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:18:20,765 - DEBUG - Calling on_field_start with no data
+2024-01-27 12:18:20,765 - DEBUG - Calling on_field_name with data[15:23]
+2024-01-27 12:18:20,765 - DEBUG - Calling on_field_data with data[24:27]
+2024-01-27 12:18:20,765 - DEBUG - Calling on_field_end with no data
+2024-01-27 12:18:20,765 - DEBUG - Calling on_end with no data
+2024-01-27 12:18:20,843 - INFO - select pg_catalog.version()
+2024-01-27 12:18:20,843 - INFO - [raw sql] ()
+2024-01-27 12:18:20,843 - INFO - select current_schema()
+2024-01-27 12:18:20,843 - INFO - [raw sql] ()
+2024-01-27 12:18:20,843 - INFO - show standard_conforming_strings
+2024-01-27 12:18:20,843 - INFO - [raw sql] ()
+2024-01-27 12:18:20,843 - INFO - BEGIN (implicit)
+2024-01-27 12:18:20,860 - INFO - SELECT "user".id, "user".fio, "user".role, "user".hashed_password, "user".is_superuser, "user".is_verified, "user".created_at 
+FROM "user" 
+WHERE "user".fio = $1::VARCHAR
+2024-01-27 12:18:20,860 - INFO - [generated in 0.00045s] ('admin',)
+2024-01-27 12:18:20,860 - DEBUG - detected 'bcrypt' backend, version '4.1.2'
+2024-01-27 12:18:20,860 - DEBUG - 'bcrypt' backend lacks $2$ support, enabling workaround
+2024-01-27 12:18:21,343 - INFO - BEGIN (implicit)
+2024-01-27 12:18:21,343 - INFO - SELECT "order".order_id, "order".room_id, "order".user_id, "order".fio, "order".tel, "order".room_number, "order".room_class, "order".work, "order".date_start, "order".date_end, "order".tabel, "order".paytype, "order".pay_status, "order".sebe_35, "order".pension_30, "order".semye_70, "order".commerc_100, "order".summa, "order".created_at, "order".updated_at 
+FROM "order" 
+WHERE "order".date_start <= $1::DATE AND "order".date_end >= $2::DATE
+2024-01-27 12:18:21,343 - INFO - [generated in 0.00053s] (datetime.date(2024, 1, 27), datetime.date(2024, 2, 26))
+2024-01-27 12:18:21,343 - INFO - SELECT count("order".order_id) AS count_1 
+FROM "order"
+2024-01-27 12:18:21,343 - INFO - [generated in 0.00031s] ()
+2024-01-27 12:26:51,277 - ERROR - Exception terminating connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000023ED38EA200>>
+Traceback (most recent call last):
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\pool\base.py", line 377, in _close_connection
+    self._dialect.do_terminate(connection)
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 1104, in do_terminate
+    dbapi_connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 897, in terminate
+    self._connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1478, in terminate
+    self._abort()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1505, in _abort
+    self._protocol.abort()
+  File "asyncpg\protocol\protocol.pyx", line 606, in asyncpg.protocol.protocol.BaseProtocol.abort
+  File "asyncpg\protocol\coreproto.pyx", line 1125, in asyncpg.protocol.protocol.CoreProtocol._terminate
+  File "asyncpg\protocol\protocol.pyx", line 966, in asyncpg.protocol.protocol.BaseProtocol._write
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 365, in write
+    self._loop_writing(data=bytes(data))
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 401, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+AttributeError: 'NoneType' object has no attribute 'send'
+2024-01-27 12:26:51,277 - ERROR - The garbage collector is trying to clean up non-checked-in connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000023ED38EA200>>, which will be terminated.  Please ensure that SQLAlchemy pooled connections are returned to the pool explicitly, either by calling ``close()`` or by using appropriate context managers to manage their lifecycle.
+2024-01-27 12:26:51,277 - ERROR - Exception terminating connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000023ED38EA2F0>>
+Traceback (most recent call last):
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\pool\base.py", line 377, in _close_connection
+    self._dialect.do_terminate(connection)
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 1104, in do_terminate
+    dbapi_connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\sqlalchemy\dialects\postgresql\asyncpg.py", line 897, in terminate
+    self._connection.terminate()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1478, in terminate
+    self._abort()
+  File "D:\fastApiProject\пансионат апи\venv\lib\site-packages\asyncpg\connection.py", line 1505, in _abort
+    self._protocol.abort()
+  File "asyncpg\protocol\protocol.pyx", line 606, in asyncpg.protocol.protocol.BaseProtocol.abort
+  File "asyncpg\protocol\coreproto.pyx", line 1125, in asyncpg.protocol.protocol.CoreProtocol._terminate
+  File "asyncpg\protocol\protocol.pyx", line 966, in asyncpg.protocol.protocol.BaseProtocol._write
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 365, in write
+    self._loop_writing(data=bytes(data))
+  File "C:\Users\Администратор\AppData\Local\Programs\Python\Python310\lib\asyncio\proactor_events.py", line 401, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+AttributeError: 'NoneType' object has no attribute 'send'
+2024-01-27 12:26:51,277 - ERROR - The garbage collector is trying to clean up non-checked-in connection <AdaptedConnection <asyncpg.connection.Connection object at 0x0000023ED38EA2F0>>, which will be terminated.  Please ensure that SQLAlchemy pooled connections are returned to the pool explicitly, either by calling ``close()`` or by using appropriate context managers to manage their lifecycle.

@@ -12,6 +12,7 @@ from typing import Union
 from orders_api import orderApi_router
 from auth import auth_router
 from order import order_router
+from rooms import room_router
 
 app = FastAPI()
 # Добавляем маршрут для обработки статических файлов
@@ -58,6 +59,7 @@ async def main():
 app.include_router(orderApi_router)
 app.include_router(auth_router)
 app.include_router(order_router)
+app.include_router(room_router)
 # except Exception as e:
 #     # Обрабатываем и логируем исключение, если оно произошло при включении роутеров
 #     logger = logging.getLogger(__name__)
