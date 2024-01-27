@@ -88,15 +88,18 @@ async def verify_password(password, hash_password):
 
 async def authenticate_user(username: str, password: str, db: async_session = Depends(get_db)):
     # user = await db.execute(select(User).where(User.fio == username))
-    user = await get_user(username, db)
-    verify = await verify_password(password, user.hashed_password)
-    if user is None:
-        # Обработка случая, когда пользователь не найден
-        # Например, возбуждение исключения или возврат информации об отсутствии пользователя
-        raise HTTPException(status_code=404, detail="User not found")
-    if user and verify:
-        return user
-    return False
+    # try:
+        user = await get_user(username, db)
+        verify = await verify_password(password, user.hashed_password)
+        if user is None:
+            # Обработка случая, когда пользователь не найден
+            # Например, возбуждение исключения или возврат информации об отсутствии пользователя
+            raise HTTPException(status_code=404, detail="User not found")
+        if user and verify:
+            return user
+        return False
+    # except:
+    #     return False
 
 
 async def get_current_user_from_cookie(Authorization: str | None = Cookie()):
@@ -146,38 +149,36 @@ async def register_user(username: str, password: str,
 async def show_login_form(request: Request, msg: str = None):
     return templates.TemplateResponse("login.html", {"request": request, "msg": msg})
 
+@auth_router.post("/login")
+async def login(request: Request, form_data:
+OAuth2PasswordRequestForm = Depends(),
+                db: async_session = Depends(get_db)):
+    username = form_data.username
+    password = str(form_data.password)
+    try:
+        user = await get_user(username, db)
+        s = await verify_user(username, password, db)
+        if s:
+            access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            access_token = create_access_token(data={"sub": user.fio}, expires_delta=access_token_expires)
+            redirect_url = "/admin/orders/"
+            # redirect_url = request.url_for("show_admin_page")
+            return RedirectResponse(url=redirect_url,
+                                    headers={"access_token": access_token, "token_type": "bearer",
+                                             'user_id': str(user.id),
+                                             'username': user.fio})
+        else:
+            # redirect_url = "/login"
+            redirect_url = request.url_for("show_login_form")
+            return RedirectResponse(url=redirect_url)
+            # return RedirectResponse(url="/login?msg=Invalid%20credentials")
 
-# Роут для выполнения аутентификации
-# @auth_router.post("/login")
-# async def login(request: Request, form_data:
-# OAuth2PasswordRequestForm = Depends(),
-#                 db: async_session = Depends(get_db)):
-#     username = form_data.username
-#     password = str(form_data.password)
-#     try:
-#         user = await get_user(username, db)
-#         s = await verify_user(username, password, db)
-#         if s:
-#             access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-#             access_token = create_access_token(data={"sub": user.fio}, expires_delta=access_token_expires)
-#             redirect_url = "/admin/orders/"
-#             # redirect_url = request.url_for("show_admin_page")
-#             return RedirectResponse(url=redirect_url,
-#                                     headers={"access_token": access_token, "token_type": "bearer",
-#                                              'user_id': str(user.id),
-#                                              'username': user.fio})
-#         else:
-#             # redirect_url = "/login"
-#             redirect_url = request.url_for("show_login_form")
-#             return RedirectResponse(url=redirect_url)
-#             # return RedirectResponse(url="/login?msg=Invalid%20credentials")
-#
-#
-#     except Exception as e:
-#         # logger.error(f"Error: {e}")
-#         # redirect_url = "/login"
-#         redirect_url = request.url_for("show_login_form")
-#         return RedirectResponse(url=redirect_url)
+
+    except Exception as e:
+        # logger.error(f"Error: {e}")
+        # redirect_url = "/login"
+        redirect_url = request.url_for("show_login_form")
+        return RedirectResponse(url=redirect_url)
 
 
 # Роут для генерации токена аутентификации

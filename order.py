@@ -39,15 +39,15 @@ async def admin_page1(request: Request,
                       ):
     try:
         user = get_user(current_user.get("username"), db)
-        if not user:
-            redirect_url = '/login'
-            return RedirectResponse(url=redirect_url)
+        # if not user:
+        #     redirect_url = '/login'
+        #     return RedirectResponse(url=redirect_url)
 
         redirect_url = f"/admin/orders/1"  # Замените на ваш URL
         raise HTTPException(status_code=303, detail="See Other", headers={"Location": redirect_url})
     except:
-        redirect_url = '/login'
-        return RedirectResponse(url=redirect_url)
+        redirect_url = f"/admin/orders/1"  # Замените на ваш URL
+        raise HTTPException(status_code=303, detail="See Other", headers={"Location": redirect_url})
 
 
 @order_router.post("/admin/order/", name="_admin_page", response_model=dict)
