@@ -52,12 +52,15 @@ def get_password_hash(password):
 
 # Функция для получения пользователя из базы данных
 async def get_user(username: str, db: async_session = Depends(get_db)):
-    user = await db.execute(select(User).filter(User.fio == username))
-    if user is None:
-        # Обработка случая, когда пользователь не найден
-        # Например, возбуждение исключения или возврат информации об отсутствии пользователя
-        raise HTTPException(status_code=404, detail="Пользователь не найден.")
-    return user.scalar()
+    try:
+        user = await db.execute(select(User).filter(User.fio == username))
+        if user is None:
+            # Обработка случая, когда пользователь не найден
+            # Например, возбуждение исключения или возврат информации об отсутствии пользователя
+            raise HTTPException(status_code=404, detail="Пользователь не найден.")
+        return user.scalar()
+    except:
+        return "0"
 
 
 # Функция для получения пользователя из базы данных
@@ -111,20 +114,20 @@ async def get_current_user_from_cookie(Authorization: str | None = Cookie()):
             # Расшифровать токен и выполнить необходимые проверки
             payload = jwt.decode(Authorization, SECRET_KEY, algorithms=[ALGORITHM])
             username: str = payload.get("sub")
-            if username is None:
-                redirect_url = '/login'
-                return RedirectResponse(url=redirect_url)
+            # if not username:
+            #     redirect_url = '/login'
+            #     return RedirectResponse(url=redirect_url)
             print(Authorization, '\n', username)
             # Вернуть информацию о пользователе, если все в порядке
             return {"username": username}
         else:
-            return {"username": 0}
+            return {"username": '0'}
 
     except Exception as e:
         # redirect_url = "/login"
         # return RedirectResponse(url=redirect_url)
         print(str(e))
-        return {"username": 0}
+        return {"username": '0'}
 #     pass
 
 

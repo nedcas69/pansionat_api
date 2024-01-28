@@ -3,7 +3,103 @@
 {% block title %}Все заказы на пансионате "Металлург"{% endblock %}
 
 {% block content %}
-            <h2>hello {{username}}!</h2>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключатель навигации">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/admin/orders/">Все заказы</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/rooms">Cвободные комнаты</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/new_order">Оформить новый заказ</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Выйти</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+ <div class="container">
+        <button type="button" class="btn btn-outline-primary  my-3 rounded-0" data-bs-toggle="modal" data-bs-target="#new_order">
+            Новый заказ вводить
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="new_order" tabindex="-1" aria-labelledby="new_orderLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="new_orderLabel">Новый заказ</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="" id="new_order_form">
+                            <div class="row" >
+                                <div class="d-flex flex-lg-row flex-column justify-content-between w-100 mb-3">
+                                    <div class="col-lg-4 col-12 ">
+                                        <label class="control-label" for="date_start">boshlanish sanasi:</label>
+                                        <input class="form-control" type="date" id="date_starts" name="date_start" required>
+                                    </div>
+                                    <div class="col-lg-4 col-12">
+                                        <label class="control-label" for="date_end">tugash sanasi:</label>
+                                        <input class="form-control" type="date" id="date_ends" name="date_end" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-2">
+                                <label for="guest_type">Кимга:</label>
+                                <select id="guest_type" name="guest_type" class="form-control">
+                                    <option value="pen">Пенсионерга тўлов 30%</option>
+                                    <option value="sebe">Ишчига тўлов 35%</option>
+                                    <option value="family">Оила аъзоларига тўлов 70%</option>
+                                    <option value="friend">Boshqa insonga to'lov 100%</option>
+                                </select>
+                            </div>
+                            <div id="tabel-group" class="form-group  mb-2"  style="display: block;">
+                                <label for="tabel">Tabel:</label>
+                                <input type="text" id="tabel" name="tabel" class="form-control" value="">
+                            </div>
+                            <div id="fio-group" class="form-group  mb-2">
+                                <label for="fio">FIO:</label>
+                                <input id="fio" name="fio" class="form-control" type="text">
+                            </div>
+
+                            <div class="form-group" >
+                                <label for="tel">Telefon raqamini kiriting:</label>
+                                <input id="tel" name="tel" class="form-control" type="text">
+                            </div>
+                            <div class="form-group" >
+                                <label for="room_number">Xonani kiriting:</label>
+                                <input id="room_number" name="room_number" class="form-control" type="text">
+                            </div>
+                            <input type="hidden" name="_csrf" value="{{csrf}}">
+                            <div class="modal-footer">
+                                <button type="button" onclick="submitForm()" class="btn btn-primary">Сохранить</button>
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+            <h2>hello {{username}} {{role}}!</h2>
         <h2>Все заказы на пансионате "Металлург" </h2>
 
         <form method="get" action="/admin/orders/{{current_page}}">
@@ -91,6 +187,109 @@
             </ul>
         </nav>
         {% endif %}
+<script>
+    let role = 'admin'
+//<!--    let role = {{role}}-->
+    var guestTypeInput = document.getElementById('guest_type');
+    var tabelGroup = document.getElementById('tabel-group');
+    guestTypeInput.addEventListener('change', function(event) {
 
-//<!-- <script src="{{ url_for('static', path='order.js') }}"></script>-->
+        if (this.value === "sebe") {
+
+            tabelGroup.style.display = 'block';
+        }else{
+            tabelGroup.style.display = 'none';
+            var tabel = document.getElementById('tabel');
+            tabel.value =0;
+        }
+    });
+
+    function submitForm() {
+        // Получаем ссылку на форму
+        var form = document.getElementById('new_order_form');
+
+        // Получаем значения полей формы
+        var dateStart = document.getElementById('date_starts').value;
+        var dateEnd = document.getElementById('date_ends').value;
+        var guestType = document.getElementById('guest_type').value;
+        var tabel = document.getElementById('tabel').value;
+        var fio = document.getElementById('fio').value;
+        var tel = document.getElementById('tel').value;
+        var roomNumber = document.getElementById('room_number').value;
+
+        // Проверка значений полей перед отправкой
+        if (!dateStart || !dateEnd || !guestType || !fio || !tel || !roomNumber) {
+            alert('Пожалуйста, заполните все обязательные поля.');
+            return;
+        }
+
+
+        // Создаем объект FormData для удобной отправки данных формы
+        var formData = new FormData(form);
+        formData.append('date_start', dateStart);
+        formData.append('date_end', dateEnd);
+        formData.append('guest_type', guestType);
+        formData.append('tabel', tabel);
+        formData.append('fio', fio);
+        formData.append('tel', tel);
+        formData.append('zxcasd2356', role);
+        formData.append('room_number', roomNumber);
+
+        // URL, куда отправлять данные формы
+        var url = '/orders/admin';  // Замените на реальный URL
+
+        // Опции запроса
+        var options = {
+            method: 'POST',
+            body: formData,
+
+        };
+
+            // Отправка запроса с использованием fetch
+            // ...
+
+        // Отправка запроса с использованием fetch
+        fetch(url, options)
+            .then(response => {
+                // Check if the response is successful (status code 2xx)
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                return response.json();
+            })
+            .then(data => {
+             $('#new_order').modal('hide');
+            })
+            .catch(error => {
+                // Обработка ошибок
+                console.error('Error:', error);
+
+            });
+
+
+    }
+
+
+
+    const date_start = document.getElementById('date_starts');
+    const date_end = document.getElementById('date_ends');
+
+    const todaysDate = new Date();
+    const year = todaysDate.getFullYear();
+    const month = ("0" + (todaysDate.getMonth() + 1)).slice(-2);
+    const day = ("0" + todaysDate.getDate()).slice(-2);
+    const maxDate = (year +"-"+ month +"-"+ day);
+
+    date_start.setAttribute('min', maxDate);
+    date_end.setAttribute('min', maxDate);
+
+    date_start.addEventListener('change', (e) => {
+        date_end.setAttribute('min', e.currentTarget.value);
+    })
+
+</script>
+
+<!-- <script src="{{ url_for('static', path='form.js') }}">let role = {{role}}</script>-->
+<!-- <script src="{{ url_for('static', path='order.js') }}"></script>-->
 {% endblock %}

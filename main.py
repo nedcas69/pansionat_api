@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from fastapi.requests import Request
 from fastapi.exceptions import RequestValidationError
 from typing import Union
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 from orders_api import orderApi_router
 from auth import auth_router
@@ -38,6 +39,7 @@ root_logger.addHandler(file_handler)
 root_logger.setLevel(logging.DEBUG)
 
 
+
 # Обработчик для записи логов при возникновении ошибок
 # def error_handler(request: Request, exc: Union[HTTPException, RequestValidationError, Exception]):
 #     logger = logging.getLogger(__name__)
@@ -48,6 +50,17 @@ root_logger.setLevel(logging.DEBUG)
 # # Добавляем обработчик ошибок к FastAPI
 # app.add_exception_handler(HTTPException, error_handler)
 # app.add_exception_handler(RequestValidationError, error_handler)
+
+# # Middleware для обработки отсутствующего cookie
+# async def check_cookie_middleware(request: Request, call_next):
+#     # Проверяем наличие cookie "Authorization"
+#     if "Authorization" not in request.cookies:
+#         # Выполняем перенаправление на страницу логина
+#         return RedirectResponse("/login")
+#     response = await call_next(request)
+#     return response
+#
+# app.add_middleware(check_cookie_middleware)
 
 
 @app.get('/')

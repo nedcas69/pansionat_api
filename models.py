@@ -56,3 +56,4 @@ class Room(Base):
     room_category = Column(String, nullable=False)
     created_at = Column(TIMESTAMP, default=datetime.now)
     updated_at = Column(TIMESTAMP, default=datetime.now, onupdate=datetime.now)
+    status = Column(Boolean, default=True)

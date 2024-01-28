@@ -18,16 +18,18 @@ order_router = APIRouter()
 templates = Jinja2Templates(directory="templates")
 
 
-@order_router.post("/admin/orders/", name="_admin_page", response_model=dict)
+@order_router.post("/admin/orders/", name="_admin_page")
 async def admin_page1(request: Request,
                       current_user: dict = Depends(get_current_user_from_cookie),
                       db: async_session = Depends(get_db)
                       ):
     try:
-        user = get_user(current_user.get("username"), db)
-        # if not user:
-        #     redirect_url = '/login'
-        #     return RedirectResponse(url=redirect_url)
+        user = current_user.get("username")
+        role = '-'
+        if user == '0':
+            redirect_url = "/login"
+            # redirect_url = request.url_for("show_login_form")
+            return RedirectResponse(url=redirect_url)
 
         redirect_url = f"/admin/orders/1"  # Замените на ваш URL
         raise HTTPException(status_code=303, detail="See Other", headers={"Location": redirect_url})
@@ -36,7 +38,7 @@ async def admin_page1(request: Request,
         raise HTTPException(status_code=303, detail="See Other", headers={"Location": redirect_url})
 
 
-@order_router.post("/admin/order/", name="_admin_page", response_model=dict)
+@order_router.post("/admin/order/", name="_admin_page")
 async def admin_page1(request: Request,
                       page: Optional[int] = Form(...),
                       fio_order: Optional[str] = Form(...),
@@ -44,16 +46,14 @@ async def admin_page1(request: Request,
                       db: async_session = Depends(get_db),
                       current_user: dict = Depends(get_current_user_from_cookie)
                       ):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
     try:
-        user = get_user(current_user.get("username"), db)
-        if not user:
-            redirect_url = '/login'
+        user = current_user.get("username")
+        role = '-'
+        if user == '0':
+            redirect_url = "/login"
+            # redirect_url = request.url_for("show_login_form")
             return RedirectResponse(url=redirect_url)
+
     except:
         redirect_url = '/login'
         return RedirectResponse(url=redirect_url)
@@ -84,7 +84,7 @@ async def admin_page1(request: Request,
 
 
 # Роут для отображения админки
-@order_router.get("/admin/orders/{page}", response_class=HTMLResponse, name="show_admin_page", response_model=dict)
+@order_router.get("/admin/orders/{page}", response_class=HTMLResponse, name="show_admin_page")
 async def show_admin_page(request: Request, page: int, fio_order: Optional[str] = None,
                           ids: Optional[int] = Form(None),
                           date_start: Optional[date] = None,
@@ -93,16 +93,18 @@ async def show_admin_page(request: Request, page: int, fio_order: Optional[str] 
                           db: async_session = Depends(get_db),
                           ):
     user = current_user.get("username")
-    current_user = get_user(user, db)
-    if current_user == '0':
+    role = '-'
+    if user == '0':
         redirect_url = "/login"
         # redirect_url = request.url_for("show_login_form")
         return RedirectResponse(url=redirect_url)
-
+    else:
+        current_user = await get_user(user, db)
+        role = current_user.role
 
     try:
         per_page = 1000
-        pagination = False
+        pagination = True
         # Построение запроса для фильтрации
         query = select(Order)
 
@@ -133,7 +135,8 @@ async def show_admin_page(request: Request, page: int, fio_order: Optional[str] 
             pass
         start = dates.date.today()
         end = start + timedelta(days=30)
-        query = select(Order).where((Order.date_start <= start) & (Order.date_end >= end))
+        if pagination:
+            query = select(Order).where((Order.date_start <= start) & (Order.date_end >= end))
         # Выполнение запроса
         orders = await db.execute(query)
         orders = orders.scalars().all()
@@ -164,7 +167,7 @@ async def show_admin_page(request: Request, page: int, fio_order: Optional[str] 
             "orders.html",
             {"request": request, "orders": orders, "current_page": page, "current_page_plus": page + 1,
              "current_page_minus": page - 1, "total_pages": total_pages,
-             "username": user,
+             "username": user, "role": role,
              "fio_order": fio_order, "pagination": pagination, "total_sum": total_sum},
         )
 
