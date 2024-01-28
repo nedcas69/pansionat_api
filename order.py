@@ -2,7 +2,7 @@ import math
 import datetime as dates
 from datetime import timedelta
 from fastapi import status, APIRouter, Depends, Form, HTTPException
-from sqlalchemy import func
+from sqlalchemy import func, desc
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import select
@@ -69,7 +69,6 @@ async def admin_page1(request: Request,
                 order.work = False
             else:
                 order.work = True
-            print('-----------------------------------------ok-----------------')
             await db.commit()
 
     except Exception as e:
@@ -85,7 +84,8 @@ async def admin_page1(request: Request,
 
 # Роут для отображения админки
 @order_router.get("/admin/orders/{page}", response_class=HTMLResponse, name="show_admin_page")
-async def show_admin_page(request: Request, page: int, fio_order: Optional[str] = None,
+async def show_admin_page(request: Request, page: int,
+                          fio_order: Optional[str] = None,
                           ids: Optional[int] = Form(None),
                           date_start: Optional[date] = None,
                           date_end: Optional[date] = None,
@@ -106,7 +106,7 @@ async def show_admin_page(request: Request, page: int, fio_order: Optional[str] 
         per_page = 1000
         pagination = True
         # Построение запроса для фильтрации
-        query = select(Order)
+        query = select(Order).order_by(desc(Order.order_id))
 
         try:
             if int(fio_order):
@@ -115,7 +115,6 @@ async def show_admin_page(request: Request, page: int, fio_order: Optional[str] 
 
         except:
             try:
-                pagination = False
                 if fio_order and fio_order != 'None':
                     query = query.filter(Order.fio == fio_order)
                 elif fio_order == 'None':
@@ -133,10 +132,19 @@ async def show_admin_page(request: Request, page: int, fio_order: Optional[str] 
                 pagination = False
         except:
             pass
-        start = dates.date.today()
-        end = start + timedelta(days=30)
-        if pagination:
-            query = select(Order).where((Order.date_start <= start) & (Order.date_end >= end))
+        if role == 'admin':
+            start = dates.date.today()
+            end = start + timedelta(days=30)
+            if pagination:
+                query = select(Order).order_by(desc(Order.order_id)).where((Order.date_start <= start) & (Order.date_end >= end) |
+                        (Order.date_end >= start) & (Order.date_start <= end))
+        elif role == 'moder':
+            todays = dates.date.today()
+            end = todays + timedelta(days=1)
+            if pagination:
+                query = select(Order).order_by(desc(Order.order_id)).where(
+                    (Order.date_start == end))
+
         # Выполнение запроса
         orders = await db.execute(query)
         orders = orders.scalars().all()

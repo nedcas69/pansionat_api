@@ -1,25 +1,20 @@
-var zxcasd2356 = role
-
+let role = 'admin'
+//<!--    let role = {{role}}-->
     var guestTypeInput = document.getElementById('guest_type');
     var tabelGroup = document.getElementById('tabel-group');
     guestTypeInput.addEventListener('change', function(event) {
 
-        if (this.value === "sebe") {
+<!--        if (this.value === "sebe") {-->
 
-            tabelGroup.style.display = 'block';
-        }else{
-            tabelGroup.style.display = 'none';
-            var tabel = document.getElementById('tabel');
-            tabel.value =0;
-        }
+<!--            tabelGroup.style.display = 'block';-->
+<!--        }else{-->
+<!--            tabelGroup.style.display = 'none';-->
+<!--            var tabel = document.getElementById('tabel');-->
+<!--            tabel.value =0;-->
+<!--        }-->
     });
 
-    var headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    // headers.append('Authorization', 'Bearer');
-
     function submitForm() {
-
         // Получаем ссылку на форму
         var form = document.getElementById('new_order_form');
 
@@ -29,37 +24,26 @@ var zxcasd2356 = role
         var guestType = document.getElementById('guest_type').value;
         var tabel = document.getElementById('tabel').value;
         var fio = document.getElementById('fio').value;
+        var tel = document.getElementById('tel').value;
         var roomNumber = document.getElementById('room_number').value;
 
         // Проверка значений полей перед отправкой
-//        if (!dateStart || !dateEnd || !guestType || !fio || !roomNumber) {
-//            alert('Пожалуйста, заполните все обязательные поля.');
-//            return;
-//        }
+        if (!dateStart || !dateEnd || !guestType || !fio || !tel || !roomNumber) {
+            alert('Пожалуйста, заполните все обязательные поля.');
+            return;
+        }
 
 
-        // Создаем объект с данными для отправки
-        var jsonData = {
-            date_start: dateStart,
-            date_end: dateEnd,
-            guest_type: guestType,
-            tabel: tabel,
-            fio: fio,
-            room_number: roomNumber,
-            room_id: 0,
-            zxcasd2356: 'admin',
-            tel: '',
-            user_id: 0,
-            room_class: '',
-            work: false,
-            paytype: '',
-            pay_status: false,
-            sebe_35: 0,
-            pension_30: 0,
-            semye_70: 0,
-            commerc_100: 0,
-            summa: 0,
-        };
+        // Создаем объект FormData для удобной отправки данных формы
+        var formData = new FormData(form);
+        formData.append('date_start', dateStart);
+        formData.append('date_end', dateEnd);
+        formData.append('guest_type', guestType);
+        formData.append('tabel', tabel);
+        formData.append('fio', fio);
+        formData.append('tel', tel);
+        formData.append('zxcasd2356', role);
+        formData.append('room_number', roomNumber);
 
         // URL, куда отправлять данные формы
         var url = '/orders/admin';  // Замените на реальный URL
@@ -67,8 +51,7 @@ var zxcasd2356 = role
         // Опции запроса
         var options = {
             method: 'POST',
-            headers: headers,
-            body: JSON.stringify(jsonData)
+            body: formData,
 
         };
 
@@ -86,23 +69,24 @@ var zxcasd2356 = role
                 return response.json();
             })
             .then(data => {
-                // Получаем ссылку на модальное окно
-                if(data.message=='true'){
-                   $('#new_order').modal('hide');
-                }
+            if (data.err != '0'){
+                $('#new_order').modal('hide');
+             }
+             alert(data.message);
             })
             .catch(error => {
                 // Обработка ошибок
                 console.error('Error:', error);
-
+                alert('Возникла ошибка!');
             });
 
 
     }
 
 
-    const date_start = document.getElementById('date_start');
-    const date_end = document.getElementById('date_end');
+
+    const date_start = document.getElementById('date_starts');
+    const date_end = document.getElementById('date_ends');
 
     const todaysDate = new Date();
     const year = todaysDate.getFullYear();

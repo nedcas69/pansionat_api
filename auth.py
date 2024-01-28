@@ -109,15 +109,9 @@ async def authenticate_user(username: str, password: str, db: async_session = De
 async def get_current_user_from_cookie(Authorization: str | None = Cookie()):
     try:
         if Authorization != None:
-            # Просто выведите токен для отладки
-            print("Received token:", Authorization)
             # Расшифровать токен и выполнить необходимые проверки
             payload = jwt.decode(Authorization, SECRET_KEY, algorithms=[ALGORITHM])
             username: str = payload.get("sub")
-            # if not username:
-            #     redirect_url = '/login'
-            #     return RedirectResponse(url=redirect_url)
-            print(Authorization, '\n', username)
             # Вернуть информацию о пользователе, если все в порядке
             return {"username": username}
         else:
@@ -179,8 +173,7 @@ async def login_for_access_token(response: Response,
         }
         return RedirectResponse(url=redirect_url, headers=headers)
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"sub": user.fio}, expires_delta=access_token_expires)
-    print(user.fio, access_token)
+    access_token = create_access_token(data={"sub": user.fio})
 
     # response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
     # response = {"access_token": access_token}
@@ -199,7 +192,7 @@ async def login_for_access_token(response: Response,
     response.set_cookie(
         key="Authorization",
         value=f"{access_token}",
-        expires=expires_str,
+        # expires=expires_str,
         path="/",
         # secure=False,  # Установите в True, если ваш сайт работает по HTTPS
         # httponly=True,  # Установите в True, чтобы кука была доступна только через HTTP
@@ -209,7 +202,7 @@ async def login_for_access_token(response: Response,
     redirect_url = "/admin/orders/"
     # Добавление куки в хедеры
     headers = {
-        "Set-Cookie": f"Authorization={access_token}; Path=/; Max-Age=3600",
+        "Set-Cookie": f"Authorization={access_token}; Path=/",
     }
     return RedirectResponse(url=redirect_url, headers=headers)
 

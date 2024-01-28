@@ -331,9 +331,9 @@ async def create_order_admin(
 
 
 
-                return True
+                return {"message": "Ваш заказ оформлен!", "err": '1'}
             else:
-                return False
+                return {"message": "Возникла ошибка при соединении с 1С! Попробуйте заново", "err": '0'}
         else:
             result = await db.execute(insert(Order).values(
                 order_id=new_order, room_id=room_id, user_id=user_id, fio=fio, tel=tel,
@@ -343,8 +343,8 @@ async def create_order_admin(
                 created_at=now, updated_at=now))
             # db.add(result)
             await db.commit()
-            return True
+            return {"message": "Ваш заказ оформлен!", "err": '1'}
     else:
-        return False
+        return {"message": "Возникла ошибка! Такой заказ существует или комната заполнено.", "err": '0'}
 # except:
 #     return False
