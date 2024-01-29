@@ -171,7 +171,6 @@ async def room_status(request: Request,
                 rooms.status = False
             else:
                 rooms.status = True
-            print(rooms.status)
             await db.commit()
 
             redirect_url = request.url_for("show_admin_room")

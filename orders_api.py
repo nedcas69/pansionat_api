@@ -189,6 +189,7 @@ async def calculate_stats(date_range: RoomAvailability, db: async_session = Depe
         #         or date_range.date_start <= select_date_end < date_range.date_end:
         #     return False
         # else:
+        await db.commit()
         return result
     except:
         return False
@@ -207,7 +208,7 @@ async def create_order_admin(
         db: async_session = Depends(get_db)):
     try:
         role = zxcasd2356
-        print(role)
+        print(role, '--------------------------------------------------------------------')
         guest_type = guest_type
         user_id = 0
         sebe_35 = 0
@@ -272,53 +273,50 @@ async def create_order_admin(
         if orders_of_seats < room.number_of_seats and summa != 0 and ordersxh == []:
 
             # Создаем объект модели Order для записи в базу данных
-            roomType = 0
-            if room_class == 'Standart':
-                roomType = 1
-            if room_class == 'Lyuks':
-                roomType = 2
-
-            paymentType = 0
-            if sebe_35 != 0:
-                paymentType = 1
-            if pension_30 != 0:
-                paymentType = 4
-            if semye_70 != 0:
-                paymentType = 2
-            if commerc_100 != 0:
-                paymentType = 3
-            start = str(date_start.strftime('%Y%m%d'))
-            end = str(date_end.strftime('%Y%m%d'))
-            data = {
-                "tabNomer": tabel,
-                "period1": start,
-                "period2": end,
-                "roomType": roomType,
-                "paymentType": paymentType,
-                "vacationer": fio
-            }
-
             orders = await db.execute(Order.__table__.select())
             orders = orders.fetchall()
             room_number = int(room_number)
             now = datetime.now()
             max_order_id = 1
-            # print(orders)
             for ordern in orders:
-                print(ordern.order_id)
                 if ordern.order_id > max_order_id:
                     max_order_id = ordern.order_id
             new_order = max_order_id + 1
-            print(role, )
+            print(role, '--------------------------------------------------------------------')
             if role == "admin":
+                roomType = 0
+                if room_class == 'Standart':
+                    roomType = 1
+                if room_class == 'Lyuks':
+                    roomType = 2
+
+                paymentType = 0
+                if sebe_35 != 0:
+                    paymentType = 1
+                if pension_30 != 0:
+                    paymentType = 4
+                if semye_70 != 0:
+                    paymentType = 2
+                if commerc_100 != 0:
+                    paymentType = 3
+                start = str(date_start.strftime('%Y%m%d'))
+                end = str(date_end.strftime('%Y%m%d'))
+                data = {
+                    "tabNomer": tabel,
+                    "period1": start,
+                    "period2": end,
+                    "roomType": roomType,
+                    "paymentType": paymentType,
+                    "vacationer": fio
+                }
                 auth = HTTPBasicAuth(C_USER, C_PASS)
                 r = requests.post(C_buh, auth=auth, json=data)
 
-                if r.status_code == 201:
+                if r.status_code == 201 and role == "admin":
                     result = await db.execute(insert(Order).values(
                         order_id=new_order, room_id=room_id, user_id=user_id, fio=fio, tel=tel,
                         room_number=room_number, room_class=room_class, work=work, date_start=date_start,
-                        date_end=date_end, tabel=tabel, paytype=paytype, pay_status=pay_status, sebe_35=sebe_35,
+                        date_end=date_end, tabel=tabel, paytype=role, pay_status=pay_status, sebe_35=sebe_35,
                         pension_30=pension_30, semye_70=semye_70, commerc_100=commerc_100, summa=summa,
                         created_at=now, updated_at=now))
 
@@ -326,20 +324,22 @@ async def create_order_admin(
                     return {"message": "Ваш заказ оформлен!", "err": '1'}
                 else:
                     return {"message": "Возникла ошибка при соединении с 1С! Попробуйте заново", "err": '0'}
-            elif role == "moder":
-                result = await db.execute(insert(Order).values(
-                    order_id=new_order, room_id=room_id, user_id=user_id, fio=fio, tel=tel,
-                    room_number=room_number, room_class=room_class, work=work, date_start=date_start,
-                    date_end=date_end, tabel=tabel, paytype=paytype, pay_status=pay_status, sebe_35=sebe_35,
-                    pension_30=pension_30, semye_70=semye_70, commerc_100=commerc_100, summa=summa,
-                    created_at=now, updated_at=now))
 
-                await db.commit()
-                return {"message": "Ваш заказ оформлен!", "err": '1'}
+            if role == "moder":
+                    result = await db.execute(insert(Order).values(
+                        order_id=new_order, room_id=room_id, user_id=user_id, fio=fio, tel=tel,
+                        room_number=room_number, room_class=room_class, work=work, date_start=date_start,
+                        date_end=date_end, tabel=tabel, paytype=role, pay_status=pay_status, sebe_35=sebe_35,
+                        pension_30=pension_30, semye_70=semye_70, commerc_100=commerc_100, summa=summa,
+                        created_at=now, updated_at=now))
+
+                    await db.commit()
+                    return {"message": "Ваш заказ оформлен!", "err": '1'}
             else:
                 return {"message": "У вас нет доступа", "err": '0'}
         else:
             return {"message": "Возникла ошибка! Такой заказ существует или комната заполнено.", "err": '0'}
+
     except:
         return {"message": "Возникла ошибка!", "err": '0'}
 
@@ -350,7 +350,7 @@ async def show_admin_page(tabel: Optional[str] = None,
                           db: async_session = Depends(get_db),
                           ):
     # Построение запроса для фильтрации
-    orders = await db.execute(Order.__table__.select().where(Order.tabel == tabel))
+    orders = await db.execute(Order.__table__.select().order_by(desc(Order.order_id)).limit(10).where(Order.tabel == tabel))
     orders = orders.fetchall()
     send_data = []
     for order in orders:

@@ -102,7 +102,7 @@ async def show_admin_page(request: Request, page: int,
         else:
             current_user = await get_user(user, db)
             role = current_user.role
-
+        print(role)
         try:
             per_page = 100
             pagination = True
@@ -140,10 +140,12 @@ async def show_admin_page(request: Request, page: int,
                 if pagination:
                     query = select(Order).order_by(desc(Order.order_id)).where((Order.date_start <= start) & (Order.date_end >= end) |
                             (Order.date_end >= start) & (Order.date_start <= end))
-            elif role == 'moder':
+            if role == 'moder' and not date_start and not date_end:
+                if pagination:
+                    pagination = False
                 todays = dates.date.today()
                 end = todays + timedelta(days=1)
-                if pagination:
+                if not pagination:
                     query = select(Order).order_by(desc(Order.order_id)).where(
                         (Order.date_start == end))
 
@@ -167,7 +169,6 @@ async def show_admin_page(request: Request, page: int,
                         order.work = False
                     else:
                         order.work = True
-                    print('-----------------------------------------ok-----------------')
                     await db.commit()
             except Exception as e:
                 # Обработка ошибок, например, вывод в лог

@@ -1,4 +1,3 @@
 .env
 .idea
 config.py
-app_log_file.log

@@ -4,13 +4,6 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, B
 from db import Base
 
 
-# class Token(Base):
-#     __tablename__ = "token"
-#     access_token= Column(String)
-#     token_type= Column(String)
-#     username= Column(String)
-
-
 class User(Base):
     __tablename__ = "user"
     id = Column(Integer, primary_key=True)
