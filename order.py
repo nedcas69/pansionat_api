@@ -1,3 +1,4 @@
+import datetime
 import math
 import datetime as dates
 from datetime import timedelta
@@ -89,10 +90,12 @@ async def show_admin_page(request: Request, page: int,
                           ids: Optional[int] = Form(None),
                           date_start: Optional[date] = None,
                           date_end: Optional[date] = None,
+                          this_day: Optional[str] = None,
                           current_user: dict = Depends(get_current_user_from_cookie),
                           db: async_session = Depends(get_db),
                           ):
     try:
+        print(this_day)
         user = current_user.get("username")
         role = '-'
         if user == '0':
@@ -102,7 +105,6 @@ async def show_admin_page(request: Request, page: int,
         else:
             current_user = await get_user(user, db)
             role = current_user.role
-        print(role)
         try:
             per_page = 100
             pagination = True
@@ -134,20 +136,34 @@ async def show_admin_page(request: Request, page: int,
                     pagination = False
             except:
                 pass
+
+            if this_day:
+                todays = dates.date.today()
+                print(todays)
+                pagination = False
+                query = query.where(Order.date_start == todays)
+
+
             if role == 'admin':
+                print(role)
                 start = dates.date.today()
                 end = start + timedelta(days=30)
                 if pagination:
-                    query = select(Order).order_by(desc(Order.order_id)).where((Order.date_start <= start) & (Order.date_end >= end) |
+                    query = select(Order).order_by(desc(Order.order_id)).limit(200).where((Order.date_start <= start) & (Order.date_end >= end) |
                             (Order.date_end >= start) & (Order.date_start <= end))
-            if role == 'moder' and not date_start and not date_end:
-                if pagination:
-                    pagination = False
+
+            if role == 'moder':
+                if not date_start and not date_end and not fio_order and not pagination and not this_day:
+                    pagination = True
                 todays = dates.date.today()
                 end = todays + timedelta(days=1)
-                if not pagination:
+                if pagination:
+                    print(role)
                     query = select(Order).order_by(desc(Order.order_id)).where(
                         (Order.date_start == end))
+                    pagination = False
+
+
 
             # Выполнение запроса
             orders = await db.execute(query)

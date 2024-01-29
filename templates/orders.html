@@ -5,186 +5,197 @@
 {% block content %}
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#"></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Переключатель навигации">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        <li  class="btn btn-outline-primary  my-3 rounded-0">
-          <a class="nav-link active" aria-current="page" href="/admin/orders/1">Все заказы</a>
-        </li>
-        <li  class="btn btn-outline-primary  my-3 rounded-0">
-          <a class="nav-link" href="/admin/rooms/1">Cвободные комнаты</a>
-        </li>
-          <li class="btn btn-outline-primary  my-3 rounded-0" data-bs-toggle="modal" data-bs-target="#new_order">
-            Оформить новый заказ
-        </li>
-        <li  class="btn btn-outline-danger  my-3 rounded-0  position-absolute end-0 top-2" >
-            <p> {{ username }} </p>
-          <a class="nav-link" href="/logout">Выйти</a>
-        </li>
-          <form class="d-flex my-3" role="search" method="get" action="/admin/orders/{{current_page}}">
-              <input type="text" class="form-control me-2" id="fio_order" name="fio_order" value="{{ fio_order }}">
-            <button type="submit" class="btn btn-primary">Поиск</button>
-        </form>
-      </ul>
-    </div>
-
-  </div>
-
-</nav>
- <div class="container">
-
-
-        <!-- Modal -->
-        <div class="modal fade" id="new_order" tabindex="-1" aria-labelledby="new_orderLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="new_orderLabel">Новый заказ</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="" id="new_order_form">
-                            <div class="row" >
-                                <div class="d-flex flex-lg-row flex-column justify-content-between w-100 mb-3">
-                                    <div class="col-lg-4 col-12 ">
-                                        <label class="control-label" for="date_start">boshlanish sanasi:</label>
-                                        <input class="form-control" type="date" id="date_starts" name="date_start" required>
-                                    </div>
-                                    <div class="col-lg-4 col-12">
-                                        <label class="control-label" for="date_end">tugash sanasi:</label>
-                                        <input class="form-control" type="date" id="date_ends" name="date_end" required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group mb-2">
-                                <label for="guest_type">Кимга:</label>
-                                <select id="guest_type" name="guest_type" class="form-control">
-                                    <option value="pen">Пенсионерга тўлов 30%</option>
-                                    <option value="sebe">Ишчига тўлов 35%</option>
-                                    <option value="family">Оила аъзоларига тўлов 70%</option>
-                                    <option value="friend">Boshqa insonga to'lov 100%</option>
-                                </select>
-                            </div>
-                            <div id="tabel-group" class="form-group  mb-2"  style="display: block;">
-                                <label for="tabel">Tabel:</label>
-                                <input type="text" id="tabel" name="tabel" class="form-control" value="">
-                            </div>
-                            <div id="fio-group" class="form-group  mb-2">
-                                <label for="fio">FIO:</label>
-                                <input id="fio" name="fio" class="form-control" type="text">
-                            </div>
-
-                            <div class="form-group" >
-                                <label for="tel">Telefon raqamini kiriting:</label>
-                                <input id="tel" name="tel" class="form-control" type="text">
-                            </div>
-                            <div class="form-group" >
-                                <label for="room_number">Xonani kiriting:</label>
-                                <input id="room_number" name="room_number" class="form-control" type="text">
-                            </div>
-                            <input type="hidden" name="_csrf" value="{{csrf}}">
-                            <div class="modal-footer">
-                                <button type="button" onclick="submitForm()" class="btn btn-primary">Сохранить</button>
-                            </div>
-
-                        </form>
-
-                    </div>
-
-                </div>
-
-
-            </div>
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Переключатель навигации">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="btn btn-outline-primary  my-3 rounded-0">
+                    <a class="nav-link active" aria-current="page" href="/admin/orders/1">Все заказы</a>
+                </li>
+                <li class="btn btn-outline-primary  my-3 rounded-0">
+                    <a class="nav-link" href="/admin/rooms/1">Cвободные комнаты</a>
+                </li>
+                <li class="btn btn-outline-primary  my-3 rounded-0" data-bs-toggle="modal" data-bs-target="#new_order">
+                    Оформить новый заказ
+                </li>
+                <li class="btn btn-outline-danger  my-3 rounded-0  position-absolute end-0 top-2">
+                    <p> {{ username }} </p>
+                    <a class="nav-link" href="/logout">Выйти</a>
+                </li>
+                <form class="d-flex my-3" role="search" method="get" action="/admin/orders/{{current_page}}">
+                    <input type="text" class="form-control me-2" id="fio_order" name="fio_order"
+                           value="{{ fio_order }}">
+                    <button type="submit" class="btn btn-primary">Поиск</button>
+                </form>
+            </ul>
         </div>
 
     </div>
 
-        <h2>Все заказы на пансионате "Металлург" </h2>
+</nav>
+<div class="container">
 
-        <form method="get">
-                <input type="date" class="form" id="date_start" name="date_start" value="{{ date_start }}">
-                <input type="date" class="form" id="date_end" name="date_end" value="{{ date_end }}">
-                <button type="submit" onclick="getDate()" class="btn btn-primary">Поиск</button>
-        </form>
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th class="table-dark">№   </th>
-                <th class="table-dark">Қабул</th>
-                <th class="table-dark">ФИО</th>
-                <th class="table-dark">Телефон рақам</th>
-                <th class="table-dark">Хона рақами</th>
-                <th class="table-dark">Табел рақам</th>
-                <th class="table-dark">Нархи</th>
-                <th class="table-dark">Келиш</th>
-                <th class="table-dark">Кетиш</th>
-            </tr>
-            </thead>
-            <tbody>
 
-            {% for order in orders %}
-            <tr>
-                <td>{{ loop.index }}</td>
-                <td>
-                    <form method="post" action="/admin/order/">
-                        <input type="hidden" name="ids" value="{{order.order_id}}"/>
-                        <input type="hidden" name="page" value="{{current_page}}"/>
-                        <input type="hidden" name="fio_order" value="{{fio_order}}"/>
-                        <button type="submit" class="btn btn-primary">
-                            {% if order.work %} Kelmadi {% else %} Keldi {% endif %}
-                        </button>
+    <!-- Modal -->
+    <div class="modal fade" id="new_order" tabindex="-1" aria-labelledby="new_orderLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="new_orderLabel">Новый заказ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" id="new_order_form">
+                        <div class="row">
+                            <div class="d-flex flex-lg-row flex-column justify-content-between w-100 mb-3">
+                                <div class="col-lg-4 col-12 ">
+                                    <label class="control-label" for="date_start">boshlanish sanasi:</label>
+                                    <input class="form-control" type="date" id="date_starts" name="date_start" required>
+                                </div>
+                                <div class="col-lg-4 col-12">
+                                    <label class="control-label" for="date_end">tugash sanasi:</label>
+                                    <input class="form-control" type="date" id="date_ends" name="date_end" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-2">
+                            <label for="guest_type">Кимга:</label>
+                            <select id="guest_type" name="guest_type" class="form-control">
+                                <option value="pen">Пенсионерга тўлов 30%</option>
+                                <option value="sebe">Ишчига тўлов 35%</option>
+                                <option value="family">Оила аъзоларига тўлов 70%</option>
+                                <option value="friend">Boshqa insonga to'lov 100%</option>
+                            </select>
+                        </div>
+                        <div id="tabel-group" class="form-group  mb-2" style="display: block;">
+                            <label for="tabel">Tabel:</label>
+                            <input type="text" id="tabel" name="tabel" class="form-control" value="">
+                        </div>
+                        <div id="fio-group" class="form-group  mb-2">
+                            <label for="fio">FIO:</label>
+                            <input id="fio" name="fio" class="form-control" type="text">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tel">Telefon raqamini kiriting:</label>
+                            <input id="tel" name="tel" class="form-control" type="text">
+                        </div>
+                        <div class="form-group">
+                            <label for="room_number">Xonani kiriting:</label>
+                            <input id="room_number" name="room_number" class="form-control" type="text">
+                        </div>
+                        <input type="hidden" name="_csrf" value="{{csrf}}">
+                        <div class="modal-footer">
+                            <button type="button" onclick="submitForm()" class="btn btn-primary">Сохранить</button>
+                        </div>
+
                     </form>
-                </td>
-                <td>{{ order.fio }}</td>
-                <td>{{ order.tel }}</td>
-                <td>{{ order.room_number }}</td>
-                <td>{{ order.tabel }}</td>
-                <td>{{ order.summa }}</td>
-                <td>{{ order.date_start }}</td>
-                <td>{{ order.date_end }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <table class="table table-striped">
-            <tbody>
-            <tr>
-                <td colspan="5"></td>
-                <td><strong>{{ total_sum }}</strong></td>
-                <td colspan="2">ИТОГО</td>
-            </tr>
-            </tbody>
-        </table>
-        {% if pagination %}
-        <!-- Пагинация -->
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                {% for page in range(1, total_pages + 1) %}
-                    {% if page == 1 and page != current_page%}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ current_page_minus }}">Предыдущая</a>
-                        </li>
-                    {% endif %}
-                        <li class="page-item {% if page == current_page %}active{% endif %}">
-                            <a class="page-link" href="{{ url_for('show_admin_page', page=page) }}">{{ page }}</a>
-                        </li>
-                    {% if page == total_pages and current_page != total_pages %}
-                        <li class="page-item">
-                            <a class="page-link" href="{{ current_page_plus }}">Следующая</a>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        </nav>
-        {% endif %}
-{{role}}
 
-<script>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+<h2>Все заказы на пансионате "Металлург" </h2>
+<div>
+    <form method="get">
+        <input type="date" class="form" id="date_start" name="date_start" value="{{ date_start }}">
+        <input type="date" class="form" id="date_end" name="date_end" value="{{ date_end }}">
+        <button type="submit" onclick="getDate()" class="btn btn-primary">Поиск</button>
+    </form>
+
+    <form method="get">
+        <input type="hidden" name="this_day" value="this_day"/>
+        <button type="submit" class="btn btn-primary">Заказы на сегодня
+        </button>
+    </form>
+</div>
+
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th class="table-dark">№</th>
+            <th class="table-dark">Қабул</th>
+            <th class="table-dark">ФИО</th>
+            <th class="table-dark">Телефон рақам</th>
+            <th class="table-dark">Хона рақами</th>
+            <th class="table-dark">Табел рақам</th>
+            <th class="table-dark">Нархи</th>
+            <th class="table-dark">Келиш</th>
+            <th class="table-dark">Кетиш</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for order in orders %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>
+                <form method="post" action="/admin/order/">
+                    <input type="hidden" name="ids" value="{{order.order_id}}"/>
+                    <input type="hidden" name="page" value="{{current_page}}"/>
+                    <input type="hidden" name="fio_order" value="{{fio_order}}"/>
+                    <button type="submit" class="btn btn-primary">
+                        {% if order.work %} Kelmadi {% else %} Keldi {% endif %}
+                    </button>
+                </form>
+            </td>
+            <td>{{ order.fio }}</td>
+            <td>{{ order.tel }}</td>
+            <td>{{ order.room_number }}</td>
+            <td>{{ order.tabel }}</td>
+            <td>{{ order.summa }}</td>
+            <td>{{ order.date_start }}</td>
+            <td>{{ order.date_end }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <table class="table table-striped">
+        <tbody>
+        <tr>
+            <td colspan="5"></td>
+            <td><strong>{{ total_sum }}</strong></td>
+            <td colspan="2">ИТОГО</td>
+        </tr>
+        </tbody>
+    </table>
+    {% if pagination %}
+    <!-- Пагинация -->
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% for page in range(1, total_pages + 1) %}
+            {% if page == 1 and page != current_page%}
+            <li class="page-item">
+                <a class="page-link" href="{{ current_page_minus }}">Предыдущая</a>
+            </li>
+            {% endif %}
+            <li class="page-item {% if page == current_page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for('show_admin_page', page=page) }}">{{ page }}</a>
+            </li>
+            {% if page == total_pages and current_page != total_pages %}
+            <li class="page-item">
+                <a class="page-link" href="{{ current_page_plus }}">Следующая</a>
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+    {% endif %}
+    {{role}}
+
+    <script>
 let role = "{{role}}"
 var guestTypeInput = document.getElementById('guest_type');
     var tabelGroup = document.getElementById('tabel-group');
@@ -279,6 +290,7 @@ var guestTypeInput = document.getElementById('guest_type');
     date_start.addEventListener('change', (e) => {
         date_end.setAttribute('min', e.currentTarget.value);
     })
-</script>
- <script src="{{ url_for('static', path='order.js') }}"></script>
-{% endblock %}
+
+    </script>
+    <script src="{{ url_for('static', path='order.js') }}"></script>
+    {% endblock %}
