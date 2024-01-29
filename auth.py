@@ -82,7 +82,7 @@ async def verify_user(username: str, password: str, db: async_session = Depends(
         raise HTTPException(status_code=404, detail="Пользователь не найден.")
     if user is not None and pwd_context.verify(password, user.hashed_password):
         return user
-    return None
+
 
 
 async def verify_password(password, hash_password):
@@ -118,40 +118,50 @@ async def get_current_user_from_cookie(Authorization: str | None = Cookie()):
             return {"username": '0'}
 
     except Exception as e:
-        # redirect_url = "/login"
-        # return RedirectResponse(url=redirect_url)
-        print(str(e))
         return {"username": '0'}
 #     pass
 
 
-# Роут для регистрации пользователя
-@auth_router.post("/register/")
-async def register_user(username: str, password: str,
-                        db: async_session = Depends(get_db)):
-    try:
-        username = username
-        hashed_password = pwd_context.hash(password)
-        result = await db.execute(insert(User).values(id=1, fio=username, hashed_password=hashed_password,
-                                                      is_superuser=False, is_verified=False,
-                                                      role=' ', created_at=datetime.now()))
-        await db.commit()
+# # Роут для регистрации пользователя
+# @auth_router.post("/register/")
+# async def register_user(username: str = Form(), password: str = Form(),
+#                         db: async_session = Depends(get_db)):
+#     try:
+#         username = username
+#         hashed_password = pwd_context.hash(password)
+#         result = await db.execute(insert(User).values(id=2, fio=username, hashed_password=hashed_password,
+#                                                       is_superuser=False, is_verified=False,
+#                                                       role=' ', created_at=datetime.now()))
+#         await db.commit()
+#
+#         return result
+#     except Exception as e:
+#         return {"error": str(e)}
 
-        return result
-    except Exception as e:
-        return {"error": str(e)}
+
+# # Роут для регистрации пользователя
+# @auth_router.get("/register/")
+# async def register_user(request: Request,
+#                         db: async_session = Depends(get_db)):
+#     return templates.TemplateResponse("register.html", {"request": request, "msg": "login"})
 
 
 # Роут для отображения формы входа
 @auth_router.get("/login", response_class=HTMLResponse, name="show_login_form")
 async def show_login_form(request: Request, msg: str = None):
-    return templates.TemplateResponse("login.html", {"request": request, "msg": "login"})
+    try:
+        return templates.TemplateResponse("login.html", {"request": request, "msg": "login"})
+    except:
+        pass
 
 @auth_router.post("/login")
 async def login(request: Request, form_data:
 OAuth2PasswordRequestForm = Depends(),
                 db: async_session = Depends(get_db)):
-    return templates.TemplateResponse("login.html", {"request": request, "msg": "Неправильное имя или пароль"})
+    try:
+        return templates.TemplateResponse("login.html", {"request": request, "msg": "Неправильное имя или пароль"})
+    except:
+        pass
 
 
 # Роут для генерации токена аутентификации
@@ -159,70 +169,51 @@ OAuth2PasswordRequestForm = Depends(),
 async def login_for_access_token(response: Response,
                                  form_data: OAuth2PasswordRequestForm = Depends(),
                                  db: async_session = Depends(get_db)):
-    # try:
-    #     username = form_data.get("username")
-    #     password = form_data.get("password")
-    username = form_data.username
-    password = form_data.password
-    user = await authenticate_user(username, password, db)
-    if user == 'user':
+    try:
+        username = form_data.username
+        password = form_data.password
+        user = await authenticate_user(username, password, db)
+        if user == 'user':
+            redirect_url = "/login"
+            # redirect_url = request.url_for("show_login_form")
+            headers = {
+                "Set-Cookie": f"Authorization=a; Path=/; Max-Age=1",
+            }
+            return RedirectResponse(url=redirect_url, headers=headers)
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(data={"sub": user.fio})
+
+        expires = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+
+        # Преобразуйте в UTC и форматируйте как строку
+        expires_utc = expires.replace(tzinfo=timezone.utc)
+        expires_str = expires_utc.strftime("%a, %d %b %Y %H:%M:%S GMT")
+
+        response.set_cookie(
+            key="Authorization",
+            value=f"{access_token}",
+            path="/",
+        )
+        redirect_url = "/admin/orders/"
+        # Добавление куки в хедеры
+        headers = {
+            "Set-Cookie": f"Authorization={access_token}; Path=/",
+        }
+        return RedirectResponse(url=redirect_url, headers=headers)
+    except Exception as e:
+        pass
+
+
+# Этот эндпоинт будет использоваться для выхода из системы (логаута)
+@auth_router.get("/logout")
+def logout(response: Response, request: Request):
+    try:
+        response.delete_cookie("Authorization", path="/")
         redirect_url = "/login"
         # redirect_url = request.url_for("show_login_form")
         headers = {
             "Set-Cookie": f"Authorization=a; Path=/; Max-Age=1",
         }
         return RedirectResponse(url=redirect_url, headers=headers)
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"sub": user.fio})
-
-    # response = JSONResponse(content={"access_token": access_token, "token_type": "bearer"})
-    # response = {"access_token": access_token}
-    # response.set_cookie("Authorization", f"Bearer {access_token}", httponly=True, path="/")
-
-    expires = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-
-    # Преобразуйте в UTC и форматируйте как строку
-    expires_utc = expires.replace(tzinfo=timezone.utc)
-    expires_str = expires_utc.strftime("%a, %d %b %Y %H:%M:%S GMT")
-
-    # Вычисляем дату и время истечения срока действия токена
-    # expiration_time = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-
-    # Устанавливаем куку в HTTP-ответе
-    response.set_cookie(
-        key="Authorization",
-        value=f"{access_token}",
-        # expires=expires_str,
-        path="/",
-        # secure=False,  # Установите в True, если ваш сайт работает по HTTPS
-        # httponly=True,  # Установите в True, чтобы кука была доступна только через HTTP
-    )
-    print(response)
-    # return response
-    redirect_url = "/admin/orders/"
-    # Добавление куки в хедеры
-    headers = {
-        "Set-Cookie": f"Authorization={access_token}; Path=/",
-    }
-    return RedirectResponse(url=redirect_url, headers=headers)
-
-
-# except Exception as e:
-#     print(str(e))
-
-
-# Этот эндпоинт будет использоваться для выхода из системы (логаута)
-@auth_router.get("/logout")
-def logout(response: Response, request: Request):
-    response.delete_cookie("Authorization", path="/")
-    redirect_url = "/login"
-    # redirect_url = request.url_for("show_login_form")
-    headers = {
-        "Set-Cookie": f"Authorization=a; Path=/; Max-Age=1",
-    }
-    return RedirectResponse(url=redirect_url, headers=headers)
-
-
-@auth_router.get("/status", response_model=dict)
-async def status(current_user: dict = Depends(get_current_user_from_cookie), ):
-    return {"status": "OK", "user": current_user}
+    except:
+        pass

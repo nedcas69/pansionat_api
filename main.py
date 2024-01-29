@@ -1,3 +1,4 @@
+import datetime
 import logging
 
 from starlette.middleware.cors import CORSMiddleware
@@ -27,10 +28,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+file_name = datetime.date.today()
 # Создаем файловый обработчик и указываем путь к файлу
-file_handler = logging.FileHandler("app_log_file.log")
+file_handler = logging.FileHandler(f"loc/{file_name}.log")
 # Создаем форматтер для логов
-formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+formatter = logging.Formatter("%(asctime)s - %(message)s")
 file_handler.setFormatter(formatter)
 # Получаем корневой логгер и добавляем к нему файловый обработчик
 root_logger = logging.getLogger()

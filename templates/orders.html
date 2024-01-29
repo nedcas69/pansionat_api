@@ -22,6 +22,7 @@
             Оформить новый заказ
         </li>
         <li  class="btn btn-outline-danger  my-3 rounded-0  position-absolute end-0 top-2" >
+            <p> {{ username }} </p>
           <a class="nav-link" href="/logout">Выйти</a>
         </li>
           <form class="d-flex my-3" role="search" method="get" action="/admin/orders/{{current_page}}">
@@ -109,10 +110,6 @@
                 <input type="date" class="form" id="date_start" name="date_start" value="{{ date_start }}">
                 <input type="date" class="form" id="date_end" name="date_end" value="{{ date_end }}">
                 <button type="submit" onclick="getDate()" class="btn btn-primary">Поиск</button>
-        </form>
-        <form method="get">
-                <input type="hidden" name="next_day" value="true"/>
-                <button type="submit" class="btn btn-primary">Поиск</button>
         </form>
         <table class="table table-striped">
             <thead>
