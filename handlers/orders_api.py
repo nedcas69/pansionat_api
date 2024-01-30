@@ -1,15 +1,15 @@
 import requests
 from requests.auth import HTTPBasicAuth
-from fastapi import Depends, APIRouter, Form, Request
+from fastapi import Depends, APIRouter, Form
 
 from datetime import timedelta
 
-from sqlalchemy import insert, func, select, desc
+from sqlalchemy import insert, desc
 
-from schemas import *
-from models import *
+from handlers.db import async_session, get_db
+from schemas.schemas import *
+from model.models import *
 from config import C_USER, C_PASS, C_buh
-from db import async_session, get_db
 
 orderApi_router = APIRouter()
 
@@ -199,7 +199,7 @@ async def calculate_stats(date_range: RoomAvailability, db: async_session = Depe
 async def create_order_admin(
         zxcasd2356: str = Form(),
         guest_type: str = Form(),
-        tabel: str = Form(),
+        tabel: str = Form(None),
         fio: str = Form(),
         room_number: str = Form(),
         tel: str = Form(),
@@ -216,6 +216,8 @@ async def create_order_admin(
         semye_70 = 0
         commerc_100 = 0
         if role == 'admin':
+            if guest_type == 'bez':
+                pension_30 = 0
             if guest_type == 'pen':
                 pension_30 = 30
             if guest_type == 'sebe':
@@ -293,12 +295,14 @@ async def create_order_admin(
                 paymentType = 0
                 if sebe_35 != 0:
                     paymentType = 1
-                if pension_30 != 0:
+                elif pension_30 != 0:
                     paymentType = 4
-                if semye_70 != 0:
+                elif semye_70 != 0:
                     paymentType = 2
-                if commerc_100 != 0:
+                elif commerc_100 != 0:
                     paymentType = 3
+                else:
+                    paymentType = 5
                 start = str(date_start.strftime('%Y%m%d'))
                 end = str(date_end.strftime('%Y%m%d'))
                 data = {
@@ -312,7 +316,18 @@ async def create_order_admin(
                 auth = HTTPBasicAuth(C_USER, C_PASS)
                 r = requests.post(C_buh, auth=auth, json=data)
 
-                if r.status_code == 201 and role == "admin":
+                if r.status_code == 201:
+                    result = await db.execute(insert(Order).values(
+                        order_id=new_order, room_id=room_id, user_id=user_id, fio=fio, tel=tel,
+                        room_number=room_number, room_class=room_class, work=work, date_start=date_start,
+                        date_end=date_end, tabel=tabel, paytype=role, pay_status=pay_status, sebe_35=sebe_35,
+                        pension_30=pension_30, semye_70=semye_70, commerc_100=commerc_100, summa=summa,
+                        created_at=now, updated_at=now))
+
+                    await db.commit()
+                    return {"message": "Ваш заказ оформлен!", "err": '1'}
+
+                elif tabel == None:
                     result = await db.execute(insert(Order).values(
                         order_id=new_order, room_id=room_id, user_id=user_id, fio=fio, tel=tel,
                         room_number=room_number, room_class=room_class, work=work, date_start=date_start,

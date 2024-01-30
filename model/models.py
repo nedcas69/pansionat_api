@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, BigInteger, Date, TIMESTAMP
 
-from db import Base
+from handlers.db import Base
 
 
 class User(Base):

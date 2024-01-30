@@ -1,18 +1,17 @@
-import datetime
 import math
 import datetime as dates
 from datetime import timedelta
-from fastapi import status, APIRouter, Depends, Form, HTTPException
+from fastapi import APIRouter, Depends, Form, HTTPException
 from sqlalchemy import func, desc
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import select
 from starlette.templating import Jinja2Templates
 
-from auth import get_user, get_current_user_from_cookie
-from schemas import *
-from models import *
-from db import async_session, get_db
+from handlers.auth import get_user, get_current_user_from_cookie
+from schemas.schemas import *
+from model.models import *
+from handlers.db import async_session, get_db
 
 order_router = APIRouter()
 # Шаблонизатор Jinja2 для работы с HTML

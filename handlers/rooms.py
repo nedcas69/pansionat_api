@@ -1,18 +1,14 @@
-import math
-import datetime as dates
 from collections import defaultdict
-from datetime import timedelta
-from fastapi import status, APIRouter, Depends, Form, HTTPException
-from sqlalchemy import func
+from fastapi import APIRouter, Depends, Form, HTTPException
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import select
 from starlette.templating import Jinja2Templates
 
-from auth import get_user, get_current_user_from_cookie
-from schemas import *
-from models import *
-from db import async_session, get_db
+from handlers.auth import get_user, get_current_user_from_cookie
+from schemas.schemas import *
+from model.models import *
+from handlers.db import async_session, get_db
 
 room_router = APIRouter()
 # Шаблонизатор Jinja2 для работы с HTML
@@ -82,6 +78,7 @@ async def show_admin_room(request: Request,
                     elif i == 2:
                         room_toDict['three'] = order.fio
                 json_data.append(room_toDict)
+
             return templates.TemplateResponse(
                 "rooms.html",
                 {"request": request, "rooms": json_data, "role": role},
@@ -146,21 +143,22 @@ async def show_admin_room(request: Request,
  # Роут для отображения админки
 @room_router.post("/admin/room_status/", response_class=HTMLResponse)
 async def room_status(request: Request,
-                          ids: Optional[int] = Form(...),
+                          ids: Optional[int] = Form(None),
                           current_user: dict = Depends(get_current_user_from_cookie),
                           db: async_session = Depends(get_db),
                           ):
-    try:
-        user = current_user.get("username")
-        role = '-'
-        if user == '0':
-            redirect_url = "/login"
-            # redirect_url = request.url_for("show_login_form")
-            return RedirectResponse(url=redirect_url)
-        else:
-            current_user = await get_user(user, db)
-            role = current_user.role
-        try:
+    # try:
+    #     user = current_user.get("username")
+    #     role = '-'
+    #     if user == '0':
+    #         redirect_url = "/login"
+    #         # redirect_url = request.url_for("show_login_form")
+    #         return RedirectResponse(url=redirect_url)
+    #     else:
+    #         current_user = await get_user(user, db)
+    #         role = current_user.role
+    #     try:
+            print(ids)
             querys = select(Room)
             query = querys.where(Room.id == int(ids))
             # Выполнение запроса
@@ -176,7 +174,7 @@ async def room_status(request: Request,
             redirect_url = request.url_for("show_admin_room")
             return RedirectResponse(url=redirect_url)
 
-        except Exception as e:
-            pass
-    except:
-        pass
+    #     except Exception as e:
+    #         pass
+    # # except:
+    #     pass

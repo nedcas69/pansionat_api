@@ -1,30 +1,23 @@
-import math
-import random
-
-from fastapi import status, APIRouter, Depends, Form, HTTPException, Cookie, Response
+from fastapi import APIRouter, Depends, HTTPException, Cookie, Response
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt
-from jose.exceptions import JWTError
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta, timezone
 from passlib.context import CryptContext
-from sqlalchemy import func, insert
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import select
 from starlette.templating import Jinja2Templates
-import logging
-from starlette.responses import JSONResponse
 
-from schemas import *
-from models import *
-from db import async_session, get_db
+from config import SECRET_KEY
+from schemas.schemas import *
+from model.models import *
+from handlers.db import async_session, get_db
 
 auth_router = APIRouter()
 
 # Стандартные настройки для хэширования пароля
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 # JWT settings
-SECRET_KEY = "your-secret-key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 # Шаблонизатор Jinja2 для работы с HTML

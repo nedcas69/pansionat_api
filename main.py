@@ -6,10 +6,10 @@ from starlette.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI
 
-from orders_api import orderApi_router
-from auth import auth_router
-from order import order_router
-from rooms import room_router
+from handlers.orders_api import orderApi_router
+from handlers.auth import auth_router
+from handlers.order import order_router
+from handlers.rooms import room_router
 
 app = FastAPI()
 # Добавляем маршрут для обработки статических файлов
