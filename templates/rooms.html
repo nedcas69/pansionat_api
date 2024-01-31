@@ -113,9 +113,8 @@
     <div class="mb-3">
         <input type="date" class="form" id="date_start" name="date_start" value="{{ date_start }}">
         <input type="date" class="form" id="date_end" name="date_end" value="{{ date_end }}">
-        <button type="submit" class="btn btn-primary">Қидириш</button>
+        <button type="submit"  onclick="getDate()"  class="btn btn-primary">Қидириш</button>
     </div>
-
 </form>
 <table class="table table-striped">
     <thead>
@@ -173,19 +172,6 @@
 
 <script>
 let role = "{{role}}"
-var guestTypeInput = document.getElementById('guest_type');
-    var tabelGroup = document.getElementById('tabel-group');
-    guestTypeInput.addEventListener('change', function(event) {
-
-        if (this.value === "sebe") {
-
-            tabelGroup.style.display = 'block';
-        }else{
-            tabelGroup.style.display = 'none';
-            var tabel = document.getElementById('tabel');
-            tabel.value =0;
-        }
-    });
 
     function submitForm() {
         // Получаем ссылку на форму

@@ -212,19 +212,6 @@
 
     <script>
 let role = "{{role}}"
-var guestTypeInput = document.getElementById('guest_type');
-    var tabelGroup = document.getElementById('tabel-group');
-    guestTypeInput.addEventListener('change', function(event) {
-
-        if (this.value === "sebe") {
-
-            tabelGroup.style.display = 'block';
-        }else{
-            tabelGroup.style.display = 'none';
-            var tabel = document.getElementById('tabel');
-            tabel.value =0;
-        }
-    });
 
     function submitForm() {
         // Получаем ссылку на форму

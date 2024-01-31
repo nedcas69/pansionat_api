@@ -272,7 +272,7 @@ async def create_order_admin(
             if room_id == orderz.room_id:
                 orders_of_seats += 1
 
-        if orders_of_seats < room.number_of_seats and summa != 0 and ordersxh == []:
+        if orders_of_seats < room.number_of_seats and ordersxh == []:
 
             # Создаем объект модели Order для записи в базу данных
             orders = await db.execute(Order.__table__.select())

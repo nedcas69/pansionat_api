@@ -147,17 +147,17 @@ async def room_status(request: Request,
                           current_user: dict = Depends(get_current_user_from_cookie),
                           db: async_session = Depends(get_db),
                           ):
-    # try:
-    #     user = current_user.get("username")
-    #     role = '-'
-    #     if user == '0':
-    #         redirect_url = "/login"
-    #         # redirect_url = request.url_for("show_login_form")
-    #         return RedirectResponse(url=redirect_url)
-    #     else:
-    #         current_user = await get_user(user, db)
-    #         role = current_user.role
-    #     try:
+    try:
+        user = current_user.get("username")
+        role = '-'
+        if user == '0':
+            redirect_url = "/login"
+            # redirect_url = request.url_for("show_login_form")
+            return RedirectResponse(url=redirect_url)
+        else:
+            current_user = await get_user(user, db)
+            role = current_user.role
+        try:
             print(ids)
             querys = select(Room)
             query = querys.where(Room.id == int(ids))
@@ -174,7 +174,7 @@ async def room_status(request: Request,
             redirect_url = request.url_for("show_admin_room")
             return RedirectResponse(url=redirect_url)
 
-    #     except Exception as e:
-    #         pass
-    # # except:
-    #     pass
+        except Exception as e:
+            pass
+    except:
+        pass
