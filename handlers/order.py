@@ -2,7 +2,7 @@ import math
 import datetime as dates
 from datetime import timedelta
 from fastapi import APIRouter, Depends, Form, HTTPException
-from sqlalchemy import func, desc
+from sqlalchemy import func, desc, and_
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import select
@@ -89,12 +89,12 @@ async def show_admin_page(request: Request, page: int,
                           ids: Optional[int] = Form(None),
                           date_start: Optional[date] = None,
                           date_end: Optional[date] = None,
-                          this_day: Optional[str] = None,
+                          next_day: Optional[str] = None,
                           current_user: dict = Depends(get_current_user_from_cookie),
                           db: async_session = Depends(get_db),
                           ):
-    try:
-        print(this_day)
+    # try:
+        print(date_start, date_end)
         user = current_user.get("username")
         role = '-'
         if user == '0':
@@ -114,55 +114,45 @@ async def show_admin_page(request: Request, page: int,
                 if int(fio_order):
                     query = query.where(Order.tabel == str(fio_order))
                     pagination = False
-
             except:
                 try:
                     if fio_order and fio_order != 'None':
-                        query = query.filter(Order.fio == fio_order)
+                        query = query.filter(Order.fio.ilike(f"%{fio_order}%"))
                     elif fio_order == 'None':
                         redirect_url = f'/admin/orders/{page}'
                         return RedirectResponse(url=redirect_url)
                     pagination = False
-
                 except:
                     pass
-            try:
-                if date_start and date_end:
-                    query = query.where(
-                        (Order.date_start <= date_start) & (Order.date_end >= date_end) |
-                        (Order.date_end >= date_start) & (Order.date_start <= date_end)
-                    )
-                    pagination = False
-            except:
-                pass
 
-            if this_day:
+                try:
+                    if date_start and date_end:
+                        query = query.filter(Order.date_start.between(date_start, date_end))
+                        pagination = False
+                except:
+                    pass
+
+            if next_day:
                 todays = dates.date.today()
-                print(todays)
+                end = todays + timedelta(days=1)
+                query = select(Order).order_by(desc(Order.order_id)).where((Order.date_start == end))
                 pagination = False
-                query = query.where(Order.date_start == todays)
-
 
             if role == 'admin':
-                print(role)
                 start = dates.date.today()
                 end = start + timedelta(days=30)
                 if pagination:
-                    query = select(Order).order_by(desc(Order.order_id)).limit(200).where((Order.date_start <= start) & (Order.date_end >= end) |
-                            (Order.date_end >= start) & (Order.date_start <= end))
+                    query = select(Order).order_by(desc(Order.order_id)).limit(200).where((Order.date_start <= start) &
+                                (Order.date_end >= end) | (Order.date_end >= start) & (Order.date_start <= end))
 
             if role == 'moder':
-                if not date_start and not date_end and not fio_order and not pagination and not this_day:
+                if not date_start and not date_end and not fio_order and not pagination and not next_day:
                     pagination = True
                 todays = dates.date.today()
-                end = todays + timedelta(days=1)
+                end = todays
                 if pagination:
-                    print(role)
-                    query = select(Order).order_by(desc(Order.order_id)).where(
-                        (Order.date_start == end))
+                    query = select(Order).order_by(desc(Order.order_id)).where((Order.date_start == end))
                     pagination = False
-
-
 
             # Выполнение запроса
             orders = await db.execute(query)
@@ -199,5 +189,5 @@ async def show_admin_page(request: Request, page: int,
 
         except Exception as e:
             pass
-    except:
-        pass
+    # except:
+    #     pass
